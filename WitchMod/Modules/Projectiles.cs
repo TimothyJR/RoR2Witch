@@ -10,14 +10,17 @@ namespace WitchMod.Modules
 	{
 		internal static GameObject firePrimaryProjectile;
 		internal static GameObject fireUtilityExplosion;
+		internal static GameObject fireSpecialMeteor;
 
 		internal static void RegisterProjectiles()
 		{
 			// only separating into separate methods for my sanity
 			CreateFirePrimary();
 			CreateFireUtility();
+			CreateFireSpecial();
 			AddProjectile(firePrimaryProjectile);
 			AddProjectile(fireUtilityExplosion);
+			AddProjectile(fireSpecialMeteor);
 		}
 
 		internal static void AddProjectile(GameObject projectileToAdd)
@@ -27,36 +30,45 @@ namespace WitchMod.Modules
 
 		private static void CreateFirePrimary()
 		{
-			ProjectileImpactExplosion bombImpactExplosion = null;
-			firePrimaryProjectile = CreateProjectile("MageFireBombProjectile", "WitchFireBallProjectile", "HenryBombGhost", out bombImpactExplosion);
+			ProjectileImpactExplosion impactExplosion = null;
+			firePrimaryProjectile = CreateProjectile("MageFireBombProjectile", "WitchFireBallProjectile", "WitchFireBallGhost", out impactExplosion, DamageType.IgniteOnHit);
 
-			bombImpactExplosion.blastRadius = 16f;
-			bombImpactExplosion.destroyOnEnemy = true;
-			bombImpactExplosion.lifetime = 12f;
-			bombImpactExplosion.impactEffect = Modules.Assets.bombExplosionEffect;
-			bombImpactExplosion.timerAfterImpact = true;
-			bombImpactExplosion.lifetimeAfterImpact = 0.1f;
+			impactExplosion.lifetime = 12f;
+			impactExplosion.impactEffect = Modules.Assets.bombExplosionEffect;
+			impactExplosion.timerAfterImpact = true;
+			impactExplosion.lifetimeAfterImpact = 0.1f;
 		}
 
 		private static void CreateFireUtility()
 		{
-			ProjectileImpactExplosion bombImpactExplosion = null;
-			fireUtilityExplosion = CreateProjectile("MageFireBombProjectile", "WitchFireBallProjectile", "HenryBombGhost", out bombImpactExplosion);
+			ProjectileImpactExplosion impactExplosion = null;
+			fireUtilityExplosion = CreateProjectile("MageFireBombProjectile", "WitchFireExplosionProjectile", "WitchFireExplosionGhost", out impactExplosion, DamageType.IgniteOnHit);
 
-			bombImpactExplosion.blastRadius = 16f;
-			bombImpactExplosion.destroyOnEnemy = true;
-			bombImpactExplosion.lifetime = 0.1f;
-			bombImpactExplosion.impactEffect = Modules.Assets.bombExplosionEffect;
-			bombImpactExplosion.timerAfterImpact = true;
-			bombImpactExplosion.lifetimeAfterImpact = 0.1f;
+			impactExplosion.lifetime = 0.1f;
+			impactExplosion.impactEffect = Modules.Assets.bombExplosionEffect;
+			impactExplosion.timerAfterImpact = true;
+			impactExplosion.lifetimeAfterImpact = 0.1f;
 		}
 
-		private static GameObject CreateProjectile(string cloneName, string newName, string meshAssetName, out ProjectileImpactExplosion impact)
+		private static void CreateFireSpecial()
+		{
+			ProjectileImpactExplosion impactExplosion = null;
+			fireSpecialMeteor = CreateProjectile("MageFireBombProjectile", "WitchFireMeteorProjectile", "WitchFireMeteorGhost", out impactExplosion, DamageType.IgniteOnHit);
+
+			impactExplosion.blastRadius = 20f;
+			impactExplosion.destroyOnEnemy = true;
+			impactExplosion.lifetime = 12f;
+			impactExplosion.impactEffect = Modules.Assets.bombExplosionEffect;
+			impactExplosion.timerAfterImpact = true;
+			impactExplosion.lifetimeAfterImpact = 0.1f;
+		}
+
+		private static GameObject CreateProjectile(string cloneName, string newName, string meshAssetName, out ProjectileImpactExplosion impact, DamageType type = DamageType.Generic)
 		{
 			GameObject projectile = CloneProjectilePrefab(cloneName, newName);
 
 			impact = projectile.GetComponent<ProjectileImpactExplosion>();
-			InitializeImpactExplosion(impact);
+			InitializeImpactExplosion(impact, type);
 
 			ProjectileController controller = projectile.GetComponent<ProjectileController>();
 			if (Modules.Assets.mainAssetBundle.LoadAsset<GameObject>(meshAssetName) != null) controller.ghostPrefab = CreateGhostPrefab(meshAssetName);
@@ -65,16 +77,16 @@ namespace WitchMod.Modules
 			return projectile;
 		}
 
-		private static void InitializeImpactExplosion(ProjectileImpactExplosion projectileImpactExplosion)
+		private static void InitializeImpactExplosion(ProjectileImpactExplosion projectileImpactExplosion, DamageType type)
 		{
 			projectileImpactExplosion.blastDamageCoefficient = 1f;
 			projectileImpactExplosion.blastProcCoefficient = 1f;
-			projectileImpactExplosion.blastRadius = 1f;
+			projectileImpactExplosion.blastRadius = 16f;
 			projectileImpactExplosion.bonusBlastForce = Vector3.zero;
 			projectileImpactExplosion.childrenCount = 0;
 			projectileImpactExplosion.childrenDamageCoefficient = 0f;
 			projectileImpactExplosion.childrenProjectilePrefab = null;
-			projectileImpactExplosion.destroyOnEnemy = false;
+			projectileImpactExplosion.destroyOnEnemy = true;
 			projectileImpactExplosion.destroyOnWorld = false;
 			projectileImpactExplosion.explosionSoundString = "";
 			projectileImpactExplosion.falloffModel = RoR2.BlastAttack.FalloffModel.None;
@@ -87,7 +99,7 @@ namespace WitchMod.Modules
 			projectileImpactExplosion.offsetForLifetimeExpiredSound = 0f;
 			projectileImpactExplosion.timerAfterImpact = false;
 
-			projectileImpactExplosion.GetComponent<ProjectileDamage>().damageType = DamageType.Generic;
+			projectileImpactExplosion.GetComponent<ProjectileDamage>().damageType = type;
 		}
 
 

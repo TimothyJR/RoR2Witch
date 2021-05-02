@@ -13,6 +13,8 @@ namespace WitchMod.SkillStates
 		public static float procCoefficient = 1f;
 		public static float baseExplosionDuration = 0.0f;
 		public static float throwForce = 0f;
+		public static string dodgeSoundString = "HenryRoll";
+		public static float dodgeFOV = EntityStates.Commando.DodgeState.dodgeFOV;
 
 		// Dodge statics
 		public static float initialSpeedCoefficient = 5f;
@@ -75,7 +77,7 @@ namespace WitchMod.SkillStates
 			{
 				this.RecalculateDashSpeed();
 
-				if (base.cameraTargetParams) base.cameraTargetParams.fovOverride = Mathf.Lerp(Roll.dodgeFOV, 60f, base.fixedAge / Roll.duration);
+				if (base.cameraTargetParams) base.cameraTargetParams.fovOverride = Mathf.Lerp(FireUtility.dodgeFOV, 60f, base.fixedAge / FireUtility.dashDuration);
 
 				Vector3 normalized = (base.transform.position - this.previousPosition).normalized;
 				if (base.characterMotor && base.characterDirection && normalized != Vector3.zero)
@@ -89,7 +91,7 @@ namespace WitchMod.SkillStates
 				}
 				this.previousPosition = base.transform.position;
 
-				if (base.isAuthority && base.fixedAge >= Roll.duration)
+				if (base.isAuthority && base.fixedAge >= FireUtility.dashDuration)
 				{
 					this.outer.SetNextStateToMain();
 					return;
@@ -124,13 +126,13 @@ namespace WitchMod.SkillStates
 
 		private void StartDash()
 		{
-			base.PlayAnimation("FullBody, Override", "Roll", "Roll.playbackRate", Roll.duration);
-			Util.PlaySound(Roll.dodgeSoundString, base.gameObject);
+			base.PlayAnimation("FullBody, Override", "Roll", "Roll.playbackRate", FireUtility.dashDuration);
+			Util.PlaySound(FireUtility.dodgeSoundString, base.gameObject);
 
 			if (NetworkServer.active)
 			{
-				base.characterBody.AddTimedBuff(Modules.Buffs.armorBuff, 3f * Roll.duration);
-				base.characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, 0.5f * Roll.duration);
+				base.characterBody.AddTimedBuff(Modules.Buffs.armorBuff, 3f * FireUtility.dashDuration);
+				base.characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, 0.5f * FireUtility.dashDuration);
 			}
 		}
 
