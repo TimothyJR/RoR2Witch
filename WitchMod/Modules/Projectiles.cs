@@ -25,7 +25,7 @@ namespace WitchMod.Modules
 
 		private static void CreateBomb()
 		{
-			bombPrefab = CloneProjectilePrefab("CommandoGrenadeProjectile", "HenryBombProjectile");
+			bombPrefab = CloneProjectilePrefab("MageFireBombProjectile", "HenryBombProjectile");
 
 			ProjectileImpactExplosion bombImpactExplosion = bombPrefab.GetComponent<ProjectileImpactExplosion>();
 			InitializeImpactExplosion(bombImpactExplosion);
