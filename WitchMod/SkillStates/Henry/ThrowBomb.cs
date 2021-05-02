@@ -44,7 +44,7 @@ namespace WitchMod.SkillStates
 				{
 					Ray aimRay = base.GetAimRay();
 
-					ProjectileManager.instance.FireProjectile(Modules.Projectiles.bombPrefab, 
+					ProjectileManager.instance.FireProjectile(Modules.Projectiles.firePrimaryProjectile,
 						aimRay.origin, 
 						Util.QuaternionSafeLookRotation(aimRay.direction), 
 						base.gameObject, 

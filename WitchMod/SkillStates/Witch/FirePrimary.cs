@@ -54,7 +54,7 @@ namespace WitchMod.SkillStates
 					{
 						Quaternion lerp = Util.QuaternionSafeLookRotation(aimRay.direction) * Quaternion.AngleAxis(start + (i * increment), up);
 
-						ProjectileManager.instance.FireProjectile(Modules.Projectiles.bombPrefab,
+						ProjectileManager.instance.FireProjectile(Modules.Projectiles.firePrimaryProjectile,
 							aimRay.origin,
 							lerp,
 							base.gameObject,

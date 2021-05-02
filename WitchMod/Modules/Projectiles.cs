@@ -8,14 +8,16 @@ namespace WitchMod.Modules
 {
 	internal static class Projectiles
 	{
-		internal static GameObject bombPrefab;
+		internal static GameObject firePrimaryProjectile;
+		internal static GameObject fireUtilityExplosion;
 
 		internal static void RegisterProjectiles()
 		{
 			// only separating into separate methods for my sanity
-			CreateBomb();
-
-			AddProjectile(bombPrefab);
+			CreateFirePrimary();
+			CreateFireUtility();
+			AddProjectile(firePrimaryProjectile);
+			AddProjectile(fireUtilityExplosion);
 		}
 
 		internal static void AddProjectile(GameObject projectileToAdd)
@@ -23,24 +25,44 @@ namespace WitchMod.Modules
 			Modules.Prefabs.projectilePrefabs.Add(projectileToAdd);
 		}
 
-		private static void CreateBomb()
+		private static void CreateFirePrimary()
 		{
-			bombPrefab = CloneProjectilePrefab("MageFireBombProjectile", "HenryBombProjectile");
-
-			ProjectileImpactExplosion bombImpactExplosion = bombPrefab.GetComponent<ProjectileImpactExplosion>();
-			InitializeImpactExplosion(bombImpactExplosion);
+			ProjectileImpactExplosion bombImpactExplosion = null;
+			firePrimaryProjectile = CreateProjectile("MageFireBombProjectile", "WitchFireBallProjectile", "HenryBombGhost", out bombImpactExplosion);
 
 			bombImpactExplosion.blastRadius = 16f;
 			bombImpactExplosion.destroyOnEnemy = true;
 			bombImpactExplosion.lifetime = 12f;
 			bombImpactExplosion.impactEffect = Modules.Assets.bombExplosionEffect;
-			//bombImpactExplosion.lifetimeExpiredSound = Modules.Assets.CreateNetworkSoundEventDef("HenryBombExplosion");
 			bombImpactExplosion.timerAfterImpact = true;
 			bombImpactExplosion.lifetimeAfterImpact = 0.1f;
+		}
 
-			ProjectileController bombController = bombPrefab.GetComponent<ProjectileController>();
-			if (Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("HenryBombGhost") != null) bombController.ghostPrefab = CreateGhostPrefab("HenryBombGhost");
-			bombController.startSound = "";
+		private static void CreateFireUtility()
+		{
+			ProjectileImpactExplosion bombImpactExplosion = null;
+			fireUtilityExplosion = CreateProjectile("MageFireBombProjectile", "WitchFireBallProjectile", "HenryBombGhost", out bombImpactExplosion);
+
+			bombImpactExplosion.blastRadius = 16f;
+			bombImpactExplosion.destroyOnEnemy = true;
+			bombImpactExplosion.lifetime = 0.1f;
+			bombImpactExplosion.impactEffect = Modules.Assets.bombExplosionEffect;
+			bombImpactExplosion.timerAfterImpact = true;
+			bombImpactExplosion.lifetimeAfterImpact = 0.1f;
+		}
+
+		private static GameObject CreateProjectile(string cloneName, string newName, string meshAssetName, out ProjectileImpactExplosion impact)
+		{
+			GameObject projectile = CloneProjectilePrefab(cloneName, newName);
+
+			impact = projectile.GetComponent<ProjectileImpactExplosion>();
+			InitializeImpactExplosion(impact);
+
+			ProjectileController controller = projectile.GetComponent<ProjectileController>();
+			if (Modules.Assets.mainAssetBundle.LoadAsset<GameObject>(meshAssetName) != null) controller.ghostPrefab = CreateGhostPrefab(meshAssetName);
+			controller.startSound = "";
+
+			return projectile;
 		}
 
 		private static void InitializeImpactExplosion(ProjectileImpactExplosion projectileImpactExplosion)
@@ -67,6 +89,7 @@ namespace WitchMod.Modules
 
 			projectileImpactExplosion.GetComponent<ProjectileDamage>().damageType = DamageType.Generic;
 		}
+
 
 		private static GameObject CreateGhostPrefab(string ghostName)
 		{
