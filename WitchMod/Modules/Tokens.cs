@@ -7,7 +7,7 @@ namespace WitchMod.Modules
 	{
 		internal static void AddTokens()
 		{
-			#region Henry
+			#region Witch
 			string prefix = WitchPlugin.developerPrefix + "_HENRY_BODY_";
 
 			#region Skins

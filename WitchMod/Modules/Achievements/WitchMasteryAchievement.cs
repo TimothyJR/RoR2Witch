@@ -27,7 +27,7 @@ namespace WitchMod.Modules.Achievements
 
 		public override BodyIndex LookUpRequiredBodyIndex()
 		{
-			return BodyCatalog.FindBodyIndex(Modules.Survivors.MyCharacter.instance.bodyName);
+			return BodyCatalog.FindBodyIndex(Modules.Survivors.WitchSurvivor.instance.bodyName);
 		}
 
 		public void ClearCheck(Run run, RunReport runReport)

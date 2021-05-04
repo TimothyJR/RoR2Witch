@@ -48,6 +48,11 @@ namespace WitchMod.Modules.Survivors
 
 				bodyPrefab = Modules.Prefabs.CreatePrefab(bodyName + "Body", "mdl" + bodyName, bodyInfo);
 				bodyPrefab.GetComponent<EntityStateMachine>().mainStateType = new EntityStates.SerializableEntityStateType(characterMainState);
+				EntityStateMachine stateMachine = bodyPrefab.AddComponent<EntityStateMachine>();
+				stateMachine.customName = "Stance";
+				stateMachine.initialStateType = new EntityStates.SerializableEntityStateType(typeof(WitchMod.SkillStates.WitchSwitchFire));
+				stateMachine.mainStateType = new EntityStates.SerializableEntityStateType(typeof(WitchMod.SkillStates.WitchSwitchFire));
+
 
 				Modules.Prefabs.SetupCharacterModel(bodyPrefab, customRendererInfos, mainRendererIndex);
 

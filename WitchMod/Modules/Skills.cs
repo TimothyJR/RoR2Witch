@@ -51,6 +51,81 @@ namespace WitchMod.Modules
 			skillFamilies.Add(specialFamily);
 		}
 
+		internal static void RemoveAllSkills(GameObject targetPrefab)
+		{
+			foreach (GenericSkill obj in targetPrefab.GetComponentsInChildren<GenericSkill>())
+			{
+				WitchPlugin.DestroyImmediate(obj);
+			}
+		}
+
+		internal static void CreateFamily(GameObject targetPrefab, string name, SkillDef[] skillDef, bool assignAsBaseSkill, int skillSlot)
+		{
+			SkillFamily family = ScriptableObject.CreateInstance<SkillFamily>();
+			switch(skillSlot)
+			{
+				case 0:
+					(family as ScriptableObject).name = $"{name}PrimaryFamily";
+					break;
+				case 1:
+					(family as ScriptableObject).name = $"{name}SecondaryFamily";
+					break;
+				case 2:
+					(family as ScriptableObject).name = $"{name}UtilityFamily";
+					break;
+				case 3:
+					(family as ScriptableObject).name = $"{name}SpecialFamily";
+					break;
+				default:
+					break;
+			}
+
+			family.variants = new SkillFamily.Variant[0];
+
+			family.variants = new SkillFamily.Variant[skillDef.Length];
+			for(int i = 0; i < skillDef.Length; i++)
+			{
+				family.variants[i] = new SkillFamily.Variant
+				{
+					skillDef = skillDef[0],
+					viewableNode = new ViewablesCatalog.Node(skillDef[0].skillNameToken, false, null)
+				};
+			}
+
+			if(assignAsBaseSkill)
+			{
+				SkillLocator skillLocator = targetPrefab.GetComponent<SkillLocator>();
+				switch(skillSlot)
+				{
+					case 0:
+						skillLocator.primary = targetPrefab.AddComponent<GenericSkill>();
+						skillLocator.primary._skillFamily = family;
+						break;
+					case 1:
+						skillLocator.secondary = targetPrefab.AddComponent<GenericSkill>();
+						skillLocator.secondary._skillFamily = family;
+						break;
+					case 2:
+						skillLocator.utility = targetPrefab.AddComponent<GenericSkill>();
+						skillLocator.utility._skillFamily = family;
+						break;
+					case 3:
+						skillLocator.special = targetPrefab.AddComponent<GenericSkill>();
+						skillLocator.special._skillFamily = family;
+						break;
+					default:
+						break;
+				}
+			}
+			else
+			{
+				GenericSkill skill = targetPrefab.AddComponent<GenericSkill>();
+				skill._skillFamily = family;
+			}
+
+			skillFamilies.Add(family);
+		}
+
 		// this could all be a lot cleaner but at least it's simple and easy to work with
 		internal static void AddPrimarySkill(GameObject targetPrefab, SkillDef skillDef)
 		{

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
+using UnityEngine;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -31,7 +32,7 @@ namespace WitchMod
 		//   this shouldn't even have to be said
 		public const string MODUID = "com.TimothyReuter.WitchMod";
 		public const string MODNAME = "WitchMod";
-		public const string MODVERSION = "1.0.0";
+		public const string MODVERSION = "0.0.5";
 
 		// a prefix for name tokens to prevent conflicts- please capitalize all name tokens for convention
 		public const string developerPrefix = "TIM";
@@ -54,7 +55,7 @@ namespace WitchMod
 			Modules.ItemDisplays.PopulateDisplays(); // collect item display prefabs for use in our display rules
 
 			// survivor initialization
-			new MyCharacter().Initialize();
+			new WitchSurvivor().Initialize();
 
 			// now make a content pack and add it- this part will change with the next update
 			new Modules.ContentPacks().Initialize();
@@ -67,13 +68,14 @@ namespace WitchMod
 		private void LateSetup(HG.ReadOnlyArray<RoR2.ContentManagement.ReadOnlyContentPack> obj)
 		{
 			// have to set item displays later now because they require direct object references..
-			Modules.Survivors.MyCharacter.instance.SetItemDisplays();
+			Modules.Survivors.WitchSurvivor.instance.SetItemDisplays();
 		}
 
 		private void Hook()
 		{
 			// run hooks here, disabling one is as simple as commenting out the line
-			On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+			//On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+			//On.RoR2.EquipmentSlot.Execute += ChangeCharacterSkills;
 		}
 
 		private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
@@ -81,12 +83,28 @@ namespace WitchMod
 			orig(self);
 
 			// a simple stat hook, adds armor after stats are recalculated
-			if (self)
+			//if (self)
+			//{
+			//	if (self.HasBuff(Modules.Buffs.armorBuff))
+			//	{
+			//		self.armor += 300f;
+			//	}
+			//}
+		}
+
+		private void ChangeCharacterSkills(On.RoR2.EquipmentSlot.orig_Execute orig, EquipmentSlot self)
+		{
+			orig(self);
+			EntityStateMachine stateMachine = self.characterBody.gameObject.GetComponents<EntityStateMachine>().FirstOrDefault((EntityStateMachine c) => c.customName != "Stance");
+			stateMachine.SetNextState(EntityStateCatalog.InstantiateState(typeof(WitchMod.SkillStates.WitchSwap)));
+		}
+
+		public void Update()
+		{
+			if(Input.GetKeyDown(KeyCode.F1))
 			{
-				if (self.HasBuff(Modules.Buffs.armorBuff))
-				{
-					self.armor += 300f;
-				}
+				EntityStateMachine stateMachine = PlayerCharacterMasterController.instances[0].master.GetBodyObject().gameObject.GetComponents<EntityStateMachine>().FirstOrDefault((EntityStateMachine c) => c.customName != "Stance");
+				stateMachine.SetNextState(EntityStateCatalog.InstantiateState(typeof(WitchMod.SkillStates.WitchSwap)));
 			}
 		}
 	}
