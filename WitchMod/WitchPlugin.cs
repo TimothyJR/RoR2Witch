@@ -32,7 +32,7 @@ namespace WitchMod
 		//   this shouldn't even have to be said
 		public const string MODUID = "com.TimothyReuter.WitchMod";
 		public const string MODNAME = "WitchMod";
-		public const string MODVERSION = "0.2.1";
+		public const string MODVERSION = "0.3.3";
 
 		// a prefix for name tokens to prevent conflicts- please capitalize all name tokens for convention
 		public const string developerPrefix = "TIM";
