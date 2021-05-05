@@ -125,4 +125,9 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SkillStates\Witch\Lightning\" />
+    <Folder Include="SkillStates\Witch\Wind\" />
+  </ItemGroup>
+
 </Project>

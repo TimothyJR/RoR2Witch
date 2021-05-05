@@ -15,7 +15,6 @@ namespace WitchMod.SkillStates
 		private float duration;
 		private float fireTime;
 		private bool hasFired;
-		private Animator animator;
 		private int projectileCount = 5;
 		private float coneSize = 60.0f;
 
@@ -25,14 +24,8 @@ namespace WitchMod.SkillStates
 			this.duration = FirePrimary.baseDuration / this.attackSpeedStat;
 			this.fireTime = 0.35f * this.duration;
 			base.characterBody.SetAimTimer(2f);
-			this.animator = base.GetModelAnimator();
 
 			base.PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.duration);
-		}
-
-		public override void OnExit()
-		{
-			base.OnExit();
 		}
 
 		private void Fire()
@@ -46,7 +39,7 @@ namespace WitchMod.SkillStates
 				{
 					Ray aimRay = base.GetAimRay();
 
-					Vector3 up = Vector3.Cross(aimRay.direction, transform.right);
+					Vector3 up = Vector3.Cross(aimRay.direction, Quaternion.Euler(0.0f, characterDirection.yaw, 0.0f) * Vector3.right);
 					float increment = coneSize / (projectileCount - 1);
 					float start = -coneSize / 2;
 
