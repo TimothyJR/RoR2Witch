@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace WitchMod.SkillStates
 {
-	class FirePrimary : BaseSkillState
+	class WindSpecial : BaseSkillState
 	{
 		public static float damageCoefficient = 16f;
 		public static float procCoefficient = 1f;
@@ -16,12 +16,12 @@ namespace WitchMod.SkillStates
 		private float fireTime;
 		private bool hasFired;
 		private int projectileCount = 5;
-		private float coneSize = 50.0f;
+		private float coneSize = 60.0f;
 
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			this.duration = FirePrimary.baseDuration / this.attackSpeedStat;
+			this.duration = WindSpecial.baseDuration / this.attackSpeedStat;
 			this.fireTime = 0.35f * this.duration;
 			base.characterBody.SetAimTimer(2f);
 
@@ -51,12 +51,12 @@ namespace WitchMod.SkillStates
 							aimRay.origin,
 							lerp,
 							base.gameObject,
-							FirePrimary.damageCoefficient * this.damageStat,
+							WindSpecial.damageCoefficient * this.damageStat,
 							4000f,
 							base.RollCrit(),
 							DamageColorIndex.Default,
 							null,
-							FirePrimary.throwForce);
+							WindSpecial.throwForce);
 					}
 				}
 			}

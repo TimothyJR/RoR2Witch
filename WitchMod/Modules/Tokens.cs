@@ -11,10 +11,10 @@ namespace WitchMod.Modules
 			string prefix = WitchPlugin.developerPrefix + "_WITCH_BODY_";
 
 			string desc = "The Witch has a lot of skills, but she tends to get focused on a few at a time.<color=#CCD3E0>" + Environment.NewLine + Environment.NewLine;
-			desc = desc + "< ! > Fire is good for clearing out waves of enemies in front of you." + Environment.NewLine + Environment.NewLine;
-			desc = desc + "< ! > Ice is slow, but strong." + Environment.NewLine + Environment.NewLine;
-			desc = desc + "< ! > Wind is nimble, but short ranged." + Environment.NewLine + Environment.NewLine;
-			desc = desc + "< ! > Lightning is..." + Environment.NewLine + Environment.NewLine;
+			desc += "< ! > Fire is good for clearing out waves of enemies in front of you." + Environment.NewLine + Environment.NewLine;
+			desc += "< ! > Ice is slow, but strong." + Environment.NewLine + Environment.NewLine;
+			desc += "< ! > Wind is nimble, but short ranged." + Environment.NewLine + Environment.NewLine;
+			desc += "< ! > Lightning is..." + Environment.NewLine + Environment.NewLine;
 
 			string outro = "..and so she left, searching for a new identity.";
 			string outroFailure = "..and so she vanished, forever a blank slate.";
