@@ -142,10 +142,35 @@ namespace WitchMod.Modules.Survivors
 				stockToConsume = 1
 			});
 
+			SkillDef windSlashDef = Skills.CreateSkillDef(new SkillDefInfo
+			{
+				skillName = prefix + "_WITCH_BODY_PRIMARY_WIND_NAME",
+				skillNameToken = prefix + "_WITCH_BODY_PRIMARY_WIND_NAME",
+				skillDescriptionToken = prefix + "_WITCH_BODY_PRIMARY_WIND_DESCRIPTION",
+				skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPrimaryIcon"),
+				activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.WindPrimaryFirstSlash)),
+				activationStateMachineName = "Weapon",
+				baseMaxStock = 1,
+				baseRechargeInterval = 0.0f,
+				beginSkillCooldownOnSkillEnd = false,
+				canceledFromSprinting = false,
+				forceSprintDuringState = false,
+				fullRestockOnAssign = true,
+				interruptPriority = EntityStates.InterruptPriority.Any,
+				resetCooldownTimerOnUse = false,
+				isCombatSkill = true,
+				mustKeyPress = false,
+				cancelSprintingOnActivation = false,
+				rechargeStock = 1,
+				requiredStock = 0,
+				stockToConsume = 0,
+				keywordTokens = new string[] { "KEYWORD_AGILE" }
+			});
+
 			SkillDef meleeSkillDef = Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.SlashCombo)), "Weapon", prefix + "_WITCH_BODY_PRIMARY_SLASH_NAME", prefix + "_WITCH_BODY_PRIMARY_SLASH_DESCRIPTION", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPrimaryIcon"), true);
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchFire", new SkillDef[] { fireSpreadSkillDef }, true, 0);
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchIce", new SkillDef[] { iceSpikeDef }, false, 0);
-			Modules.Skills.CreateFamily(bodyPrefab, "WitchWind", new SkillDef[] { fireSpreadSkillDef }, false, 0);
+			Modules.Skills.CreateFamily(bodyPrefab, "WitchWind", new SkillDef[] { windSlashDef }, false, 0);
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { meleeSkillDef }, false, 0);
 			#endregion
 
@@ -226,7 +251,7 @@ namespace WitchMod.Modules.Survivors
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchFire", new SkillDef[] { beamSkillDef }, true, 1);
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchIce", new SkillDef[] { iceBeamDef }, false, 1);
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchWind", new SkillDef[] { shootSkillDef }, false, 1);
-			Modules.Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { fireSpreadSkillDef }, false, 1);
+			Modules.Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { shootSkillDef }, false, 1);
 			#endregion
 
 			#region Utility
@@ -278,7 +303,6 @@ namespace WitchMod.Modules.Survivors
 				stockToConsume = 1
 			});
 
-
 			SkillDef rollSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
 			{
 				skillName = prefix + "_WITCH_BODY_UTILITY_ROLL_NAME",
@@ -305,7 +329,7 @@ namespace WitchMod.Modules.Survivors
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchFire", new SkillDef[] { explosionSkillDef }, true, 2);
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchIce", new SkillDef[] { iceSelfFreeze }, false, 2);
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchWind", new SkillDef[] { beamSkillDef }, false, 2);
-			Modules.Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { meleeSkillDef }, false, 2);
+			Modules.Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { rollSkillDef }, false, 2);
 			#endregion
 
 			#region Special

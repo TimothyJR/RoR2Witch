@@ -12,45 +12,6 @@ namespace WitchMod.Modules
 		internal static List<SkillFamily> skillFamilies = new List<SkillFamily>();
 		internal static List<SkillDef> skillDefs = new List<SkillDef>();
 
-		internal static void CreateSkillFamilies(GameObject targetPrefab)
-		{
-			foreach (GenericSkill obj in targetPrefab.GetComponentsInChildren<GenericSkill>())
-			{
-				WitchPlugin.DestroyImmediate(obj);
-			}
-
-			SkillLocator skillLocator = targetPrefab.GetComponent<SkillLocator>();
-
-			skillLocator.primary = targetPrefab.AddComponent<GenericSkill>();
-			SkillFamily primaryFamily = ScriptableObject.CreateInstance<SkillFamily>();
-			(primaryFamily as ScriptableObject).name = targetPrefab.name + "PrimaryFamily";
-			primaryFamily.variants = new SkillFamily.Variant[0];
-			skillLocator.primary._skillFamily = primaryFamily;
-
-			skillLocator.secondary = targetPrefab.AddComponent<GenericSkill>();
-			SkillFamily secondaryFamily = ScriptableObject.CreateInstance<SkillFamily>();
-			(secondaryFamily as ScriptableObject).name = targetPrefab.name + "SecondaryFamily";
-			secondaryFamily.variants = new SkillFamily.Variant[0];
-			skillLocator.secondary._skillFamily = secondaryFamily;
-
-			skillLocator.utility = targetPrefab.AddComponent<GenericSkill>();
-			SkillFamily utilityFamily = ScriptableObject.CreateInstance<SkillFamily>();
-			(utilityFamily as ScriptableObject).name = targetPrefab.name + "UtilityFamily";
-			utilityFamily.variants = new SkillFamily.Variant[0];
-			skillLocator.utility._skillFamily = utilityFamily;
-
-			skillLocator.special = targetPrefab.AddComponent<GenericSkill>();
-			SkillFamily specialFamily = ScriptableObject.CreateInstance<SkillFamily>();
-			(specialFamily as ScriptableObject).name = targetPrefab.name + "SpecialFamily";
-			specialFamily.variants = new SkillFamily.Variant[0];
-			skillLocator.special._skillFamily = specialFamily;
-
-			skillFamilies.Add(primaryFamily);
-			skillFamilies.Add(secondaryFamily);
-			skillFamilies.Add(utilityFamily);
-			skillFamilies.Add(specialFamily);
-		}
-
 		internal static void RemoveAllSkills(GameObject targetPrefab)
 		{
 			foreach (GenericSkill obj in targetPrefab.GetComponentsInChildren<GenericSkill>())
@@ -124,87 +85,6 @@ namespace WitchMod.Modules
 			}
 
 			skillFamilies.Add(family);
-		}
-
-		// this could all be a lot cleaner but at least it's simple and easy to work with
-		internal static void AddPrimarySkill(GameObject targetPrefab, SkillDef skillDef)
-		{
-			SkillLocator skillLocator = targetPrefab.GetComponent<SkillLocator>();
-
-			SkillFamily skillFamily = skillLocator.primary.skillFamily;
-
-			Array.Resize(ref skillFamily.variants, skillFamily.variants.Length + 1);
-			skillFamily.variants[skillFamily.variants.Length - 1] = new SkillFamily.Variant
-			{
-				skillDef = skillDef,
-				viewableNode = new ViewablesCatalog.Node(skillDef.skillNameToken, false, null)
-			};
-		}
-
-		internal static void AddSecondarySkill(GameObject targetPrefab, SkillDef skillDef)
-		{
-			SkillLocator skillLocator = targetPrefab.GetComponent<SkillLocator>();
-
-			SkillFamily skillFamily = skillLocator.secondary.skillFamily;
-
-			Array.Resize(ref skillFamily.variants, skillFamily.variants.Length + 1);
-			skillFamily.variants[skillFamily.variants.Length - 1] = new SkillFamily.Variant
-			{
-				skillDef = skillDef,
-				viewableNode = new ViewablesCatalog.Node(skillDef.skillNameToken, false, null)
-			};
-		}
-
-		internal static void AddSecondarySkills(GameObject targetPrefab, params SkillDef[] skillDefs)
-		{
-			foreach (SkillDef i in skillDefs)
-			{
-				AddSecondarySkill(targetPrefab, i);
-			}
-		}
-
-		internal static void AddUtilitySkill(GameObject targetPrefab, SkillDef skillDef)
-		{
-			SkillLocator skillLocator = targetPrefab.GetComponent<SkillLocator>();
-
-			SkillFamily skillFamily = skillLocator.utility.skillFamily;
-
-			Array.Resize(ref skillFamily.variants, skillFamily.variants.Length + 1);
-			skillFamily.variants[skillFamily.variants.Length - 1] = new SkillFamily.Variant
-			{
-				skillDef = skillDef,
-				viewableNode = new ViewablesCatalog.Node(skillDef.skillNameToken, false, null)
-			};
-		}
-
-		internal static void AddUtilitySkills(GameObject targetPrefab, params SkillDef[] skillDefs)
-		{
-			foreach (SkillDef i in skillDefs)
-			{
-				AddUtilitySkill(targetPrefab, i);
-			}
-		}
-
-		internal static void AddSpecialSkill(GameObject targetPrefab, SkillDef skillDef)
-		{
-			SkillLocator skillLocator = targetPrefab.GetComponent<SkillLocator>();
-
-			SkillFamily skillFamily = skillLocator.special.skillFamily;
-
-			Array.Resize(ref skillFamily.variants, skillFamily.variants.Length + 1);
-			skillFamily.variants[skillFamily.variants.Length - 1] = new SkillFamily.Variant
-			{
-				skillDef = skillDef,
-				viewableNode = new ViewablesCatalog.Node(skillDef.skillNameToken, false, null)
-			};
-		}
-
-		internal static void AddSpecialSkills(GameObject targetPrefab, params SkillDef[] skillDefs)
-		{
-			foreach (SkillDef i in skillDefs)
-			{
-				AddSpecialSkill(targetPrefab, i);
-			}
 		}
 
 		internal static SkillDef CreatePrimarySkillDef(SerializableEntityStateType state, string stateMachine, string skillNameToken, string skillDescriptionToken, Sprite skillIcon, bool agile)
