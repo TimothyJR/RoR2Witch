@@ -40,13 +40,13 @@ namespace WitchMod.Modules.Survivors
 		internal virtual void InitializeCharacter()
 		{
 			// this creates a config option to enable the character- feel free to remove if the character is the only thing in your mod
-			characterEnabled = Modules.Config.CharacterEnableConfig(bodyName);
+			characterEnabled = Config.CharacterEnableConfig(bodyName);
 
 			if (characterEnabled.Value)
 			{
 				InitializeUnlockables();
 
-				bodyPrefab = Modules.Prefabs.CreatePrefab(bodyName + "Body", "mdl" + bodyName, bodyInfo);
+				bodyPrefab = Prefabs.CreatePrefab(bodyName + "Body", "mdl" + bodyName, bodyInfo);
 				bodyPrefab.GetComponent<EntityStateMachine>().mainStateType = new EntityStates.SerializableEntityStateType(characterMainState);
 				EntityStateMachine stateMachine = bodyPrefab.AddComponent<EntityStateMachine>();
 				stateMachine.customName = "Stance";
@@ -54,11 +54,11 @@ namespace WitchMod.Modules.Survivors
 				stateMachine.mainStateType = new EntityStates.SerializableEntityStateType(typeof(WitchMod.SkillStates.WitchSwitchFire));
 
 
-				Modules.Prefabs.SetupCharacterModel(bodyPrefab, customRendererInfos, mainRendererIndex);
+				Prefabs.SetupCharacterModel(bodyPrefab, customRendererInfos, mainRendererIndex);
 
-				displayPrefab = Modules.Prefabs.CreateDisplayPrefab(bodyName + "Display", bodyPrefab, bodyInfo);
+				displayPrefab = Prefabs.CreateDisplayPrefab(bodyName + "Display", bodyPrefab, bodyInfo);
 
-				Modules.Prefabs.RegisterNewSurvivor(bodyPrefab, displayPrefab, Color.grey, bodyName.ToUpper(), characterUnlockableDef, 101f);
+				Prefabs.RegisterNewSurvivor(bodyPrefab, displayPrefab, Color.grey, bodyName.ToUpper(), characterUnlockableDef, 101f);
 
 				InitializeHitboxes();
 				InitializeSkills();
@@ -86,7 +86,7 @@ namespace WitchMod.Modules.Survivors
 
 		internal virtual void InitializeDoppelganger()
 		{
-			Modules.Prefabs.CreateGenericDoppelganger(instance.bodyPrefab, bodyName + "MonsterMaster", "Merc");
+			Prefabs.CreateGenericDoppelganger(bodyPrefab, bodyName + "MonsterMaster", "Merc");
 		}
 
 		internal virtual void InitializeItemDisplays()
@@ -96,7 +96,7 @@ namespace WitchMod.Modules.Survivors
 			itemDisplayRuleSet = ScriptableObject.CreateInstance<ItemDisplayRuleSet>();
 			itemDisplayRuleSet.name = "idrs" + bodyName;
 
-			characterModel.itemDisplayRuleSet = itemDisplayRuleSet;
+			itemDisplayRuleSet = itemDisplayRuleSet;
 		}
 
 		internal virtual void SetItemDisplays()

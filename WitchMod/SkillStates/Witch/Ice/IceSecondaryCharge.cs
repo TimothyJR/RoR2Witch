@@ -58,7 +58,7 @@ namespace WitchMod.SkillStates
 
 		protected override void PlayChargeAnimation()
 		{
-			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.duration);
+			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", duration);
 		}
 
 

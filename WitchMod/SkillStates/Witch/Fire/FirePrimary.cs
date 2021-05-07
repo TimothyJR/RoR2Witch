@@ -21,23 +21,23 @@ namespace WitchMod.SkillStates
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			this.duration = FirePrimary.baseDuration / this.attackSpeedStat;
-			this.fireTime = 0.35f * this.duration;
-			base.characterBody.SetAimTimer(2f);
+			duration = baseDuration / attackSpeedStat;
+			fireTime = 0.35f * duration;
+			characterBody.SetAimTimer(2f);
 
-			base.PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.duration);
+			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", duration);
 		}
 
 		private void Fire()
 		{
-			if (!this.hasFired)
+			if (!hasFired)
 			{
-				this.hasFired = true;
-				Util.PlaySound("HenryBombThrow", base.gameObject);
+				hasFired = true;
+				Util.PlaySound("HenryBombThrow", gameObject);
 
-				if (base.isAuthority)
+				if (isAuthority)
 				{
-					Ray aimRay = base.GetAimRay();
+					Ray aimRay = GetAimRay();
 
 					Vector3 up = Vector3.Cross(aimRay.direction, Quaternion.Euler(0.0f, characterDirection.yaw, 0.0f) * Vector3.right);
 					float increment = coneSize / (projectileCount - 1);
@@ -50,13 +50,13 @@ namespace WitchMod.SkillStates
 						ProjectileManager.instance.FireProjectile(Modules.Projectiles.firePrimaryProjectile,
 							aimRay.origin,
 							lerp,
-							base.gameObject,
-							FirePrimary.damageCoefficient * this.damageStat,
+							gameObject,
+							damageCoefficient * damageStat,
 							4000f,
-							base.RollCrit(),
+							RollCrit(),
 							DamageColorIndex.Default,
 							null,
-							FirePrimary.throwForce);
+							throwForce);
 					}
 				}
 			}
@@ -66,14 +66,14 @@ namespace WitchMod.SkillStates
 		{
 			base.FixedUpdate();
 
-			if (base.fixedAge >= this.fireTime)
+			if (fixedAge >= fireTime)
 			{
-				this.Fire();
+				Fire();
 			}
 
-			if (base.fixedAge >= this.duration && base.isAuthority)
+			if (fixedAge >= duration && isAuthority)
 			{
-				this.outer.SetNextStateToMain();
+				outer.SetNextStateToMain();
 				return;
 			}
 		}

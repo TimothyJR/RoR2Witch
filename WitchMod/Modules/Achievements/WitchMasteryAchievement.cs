@@ -6,28 +6,28 @@ namespace WitchMod.Modules.Achievements
 {
 	internal class MasteryAchievement : ModdedUnlockable
 	{
-		public override string AchievementIdentifier { get; } = WitchPlugin.developerPrefix + "_HENRY_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_ID";
-		public override string UnlockableIdentifier { get; } = WitchPlugin.developerPrefix + "_HENRY_BODY_MASTERYUNLOCKABLE_REWARD_ID";
-		public override string AchievementNameToken { get; } = WitchPlugin.developerPrefix + "_HENRY_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_NAME";
-		public override string PrerequisiteUnlockableIdentifier { get; } = WitchPlugin.developerPrefix + "_HENRY_BODY_UNLOCKABLE_REWARD_ID";
-		public override string UnlockableNameToken { get; } = WitchPlugin.developerPrefix + "_HENRY_BODY_MASTERYUNLOCKABLE_UNLOCKABLE_NAME";
-		public override string AchievementDescToken { get; } = WitchPlugin.developerPrefix + "_HENRY_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_DESC";
-		public override Sprite Sprite { get; } = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texMasteryAchievement");
+		public override string AchievementIdentifier { get; } = WitchPlugin.developerPrefix + "_WITCH_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_ID";
+		public override string UnlockableIdentifier { get; } = WitchPlugin.developerPrefix + "_WITCH_BODY_MASTERYUNLOCKABLE_REWARD_ID";
+		public override string AchievementNameToken { get; } = WitchPlugin.developerPrefix + "_WITCH_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_NAME";
+		public override string PrerequisiteUnlockableIdentifier { get; } = WitchPlugin.developerPrefix + "_WITCH_BODY_UNLOCKABLE_REWARD_ID";
+		public override string UnlockableNameToken { get; } = WitchPlugin.developerPrefix + "_WITCH_BODY_MASTERYUNLOCKABLE_UNLOCKABLE_NAME";
+		public override string AchievementDescToken { get; } = WitchPlugin.developerPrefix + "_WITCH_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_DESC";
+		public override Sprite Sprite { get; } = Assets.mainAssetBundle.LoadAsset<Sprite>("texMasteryAchievement");
 
 		public override Func<string> GetHowToUnlock { get; } = (() => Language.GetStringFormatted("UNLOCK_VIA_ACHIEVEMENT_FORMAT", new object[]
 							{
-								Language.GetString(WitchPlugin.developerPrefix + "_HENRY_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_NAME"),
-								Language.GetString(WitchPlugin.developerPrefix + "_HENRY_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_DESC")
+								Language.GetString(WitchPlugin.developerPrefix + "_WITCH_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_NAME"),
+								Language.GetString(WitchPlugin.developerPrefix + "_WITCH_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_DESC")
 							}));
 		public override Func<string> GetUnlocked { get; } = (() => Language.GetStringFormatted("UNLOCKED_FORMAT", new object[]
 							{
-								Language.GetString(WitchPlugin.developerPrefix + "_HENRY_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_NAME"),
-								Language.GetString(WitchPlugin.developerPrefix + "_HENRY_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_DESC")
+								Language.GetString(WitchPlugin.developerPrefix + "_WITCH_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_NAME"),
+								Language.GetString(WitchPlugin.developerPrefix + "_WITCH_BODY_MASTERYUNLOCKABLE_ACHIEVEMENT_DESC")
 							}));
 
 		public override BodyIndex LookUpRequiredBodyIndex()
 		{
-			return BodyCatalog.FindBodyIndex(Modules.Survivors.WitchSurvivor.instance.bodyName);
+			return BodyCatalog.FindBodyIndex(Survivors.SurvivorBase.instance.bodyName);
 		}
 
 		public void ClearCheck(Run run, RunReport runReport)
@@ -43,9 +43,9 @@ namespace WitchMod.Modules.Achievements
 
 				if (difficultyDef != null && difficultyDef.countsAsHardMode)
 				{
-					if (base.meetsBodyRequirement)
+					if (meetsBodyRequirement)
 					{
-						base.Grant();
+						Grant();
 					}
 				}
 			}
@@ -55,14 +55,14 @@ namespace WitchMod.Modules.Achievements
 		{
 			base.OnInstall();
 
-			Run.onClientGameOverGlobal += this.ClearCheck;
+			Run.onClientGameOverGlobal += ClearCheck;
 		}
 
 		public override void OnUninstall()
 		{
 			base.OnUninstall();
 
-			Run.onClientGameOverGlobal -= this.ClearCheck;
+			Run.onClientGameOverGlobal -= ClearCheck;
 		}
 	}
 }

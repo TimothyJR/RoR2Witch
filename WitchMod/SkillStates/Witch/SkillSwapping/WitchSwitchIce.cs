@@ -7,16 +7,16 @@ namespace WitchMod.SkillStates
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			this.swapState = typeof(WitchSwitchWind);
+			swapState = typeof(WitchSwitchWind);
 		}
 
 		protected override GenericSkill[] GetCurrentPrimarySkill()
 		{
 			GenericSkill[] skills = new GenericSkill[4];
-			skills[0] = base.skillLocator.FindSkillByFamilyName("WitchIcePrimaryFamily");
-			skills[1] = base.skillLocator.FindSkillByFamilyName("WitchIceSecondaryFamily");
-			skills[2] = base.skillLocator.FindSkillByFamilyName("WitchIceUtilityFamily");
-			skills[3] = base.skillLocator.FindSkillByFamilyName("WitchIceSpecialFamily");
+			skills[0] = skillLocator.FindSkillByFamilyName("WitchIcePrimaryFamily");
+			skills[1] = skillLocator.FindSkillByFamilyName("WitchIceSecondaryFamily");
+			skills[2] = skillLocator.FindSkillByFamilyName("WitchIceUtilityFamily");
+			skills[3] = skillLocator.FindSkillByFamilyName("WitchIceSpecialFamily");
 			return skills;
 		}
 	}

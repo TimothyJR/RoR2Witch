@@ -21,9 +21,6 @@ namespace WitchMod.SkillStates
 		public static float finalSpeedCoefficient = 2.5f;
 		public static float dashDuration = 0.5f;
 
-		// General variables
-		private Animator animator;
-
 		// Explosion variables
 		private float explosionDuration;
 		private float fireTime;
@@ -37,28 +34,27 @@ namespace WitchMod.SkillStates
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			this.explosionDuration = FireUtility.baseExplosionDuration / this.attackSpeedStat;
-			this.fireTime = 0.35f * this.explosionDuration;
-			base.characterBody.SetAimTimer(2f);
-			this.animator = base.GetModelAnimator();
+			explosionDuration = baseExplosionDuration / attackSpeedStat;
+			fireTime = 0.35f * explosionDuration;
+			characterBody.SetAimTimer(2f);
 
-			if (base.isAuthority && base.inputBank && base.characterDirection)
+			if (isAuthority && inputBank && characterDirection)
 			{
-				this.backwardDirection = -base.GetAimRay().direction;
+				backwardDirection = -GetAimRay().direction;
 			}
 
-			this.RecalculateDashSpeed();
+			RecalculateDashSpeed();
 
-			if (base.characterMotor && base.characterDirection)
+			if (characterMotor && characterDirection)
 			{
-				base.characterMotor.velocity.y = 0f;
-				base.characterMotor.velocity = this.backwardDirection * this.dashSpeed;
+				characterMotor.velocity.y = 0f;
+				characterMotor.velocity = backwardDirection * dashSpeed;
 			}
 
-			Vector3 velocity = base.characterMotor ? base.characterMotor.velocity : Vector3.zero;
-			this.previousPosition = base.transform.position - velocity;
+			Vector3 velocity = characterMotor ? characterMotor.velocity : Vector3.zero;
+			previousPosition = transform.position - velocity;
 
-			base.PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.explosionDuration);
+			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", explosionDuration);
 
 		}
 
@@ -66,34 +62,34 @@ namespace WitchMod.SkillStates
 		{
 			base.FixedUpdate();
 
-			if (base.fixedAge >= this.fireTime && !hasFired)
+			if (fixedAge >= fireTime && !hasFired)
 			{
-				this.Fire();
-				this.StartDash();
+				Fire();
+				StartDash();
 			}
 
 			// Dash related
 			if(hasFired)
 			{
-				this.RecalculateDashSpeed();
+				RecalculateDashSpeed();
 
-				if (base.cameraTargetParams) base.cameraTargetParams.fovOverride = Mathf.Lerp(FireUtility.dodgeFOV, 60f, base.fixedAge / FireUtility.dashDuration);
+				if (cameraTargetParams) cameraTargetParams.fovOverride = Mathf.Lerp(dodgeFOV, 60f, fixedAge / dashDuration);
 
-				Vector3 normalized = (base.transform.position - this.previousPosition).normalized;
-				if (base.characterMotor && base.characterDirection && normalized != Vector3.zero)
+				Vector3 normalized = (transform.position - previousPosition).normalized;
+				if (characterMotor && characterDirection && normalized != Vector3.zero)
 				{
-					Vector3 vector = normalized * this.dashSpeed;
-					float d = Mathf.Max(Vector3.Dot(vector, this.backwardDirection), 0f);
-					vector = this.backwardDirection * d;
+					Vector3 vector = normalized * dashSpeed;
+					float d = Mathf.Max(Vector3.Dot(vector, backwardDirection), 0f);
+					vector = backwardDirection * d;
 					//vector.y = 0f;
 
-					base.characterMotor.velocity = vector;
+					characterMotor.velocity = vector;
 				}
-				this.previousPosition = base.transform.position;
+				previousPosition = transform.position;
 
-				if (base.isAuthority && base.fixedAge >= FireUtility.dashDuration)
+				if (isAuthority && fixedAge >= dashDuration)
 				{
-					this.outer.SetNextStateToMain();
+					outer.SetNextStateToMain();
 					return;
 				}
 			}
@@ -101,61 +97,61 @@ namespace WitchMod.SkillStates
 
 		private void Fire()
 		{
-			this.hasFired = true;
-			Util.PlaySound("HenryBombThrow", base.gameObject);
+			hasFired = true;
+			Util.PlaySound("HenryBombThrow", gameObject);
 
-			if (base.isAuthority)
+			if (isAuthority)
 			{
-				Ray aimRay = base.GetAimRay();
+				Ray aimRay = GetAimRay();
 
 				ProjectileManager.instance.FireProjectile(Modules.Projectiles.fireUtilityExplosion,
 					aimRay.origin,
 					Util.QuaternionSafeLookRotation(aimRay.direction),
-					base.gameObject,
-					FireUtility.damageCoefficient * this.damageStat,
+					gameObject,
+					damageCoefficient * damageStat,
 					4000f,
-					base.RollCrit(),
+					RollCrit(),
 					DamageColorIndex.Default,
 					null,
-					FireUtility.throwForce);
+					throwForce);
 			}
 
 		}
 
 		private void StartDash()
 		{
-			base.PlayAnimation("FullBody, Override", "Roll", "Roll.playbackRate", FireUtility.dashDuration);
-			Util.PlaySound(FireUtility.dodgeSoundString, base.gameObject);
+			PlayAnimation("FullBody, Override", "Roll", "Roll.playbackRate", dashDuration);
+			Util.PlaySound(dodgeSoundString, gameObject);
 
 			if (NetworkServer.active)
 			{
-				base.characterBody.AddTimedBuff(Modules.Buffs.armorBuff, 3f * FireUtility.dashDuration);
-				base.characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, 0.5f * FireUtility.dashDuration);
+				characterBody.AddTimedBuff(Modules.Buffs.armorBuff, 3f * dashDuration);
+				characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, 0.5f * dashDuration);
 			}
 		}
 
 		private void RecalculateDashSpeed()
 		{
-			this.dashSpeed = this.moveSpeedStat * Mathf.Lerp(FireUtility.initialSpeedCoefficient, FireUtility.finalSpeedCoefficient, base.fixedAge / FireUtility.dashDuration);
+			dashSpeed = moveSpeedStat * Mathf.Lerp(initialSpeedCoefficient, finalSpeedCoefficient, fixedAge / dashDuration);
 		}
 
 		public override void OnExit()
 		{
-			if (base.cameraTargetParams) base.cameraTargetParams.fovOverride = -1f;
+			if (cameraTargetParams) cameraTargetParams.fovOverride = -1f;
 			base.OnExit();
-			base.characterMotor.disableAirControlUntilCollision = false;
+			characterMotor.disableAirControlUntilCollision = false;
 		}
 
 		public override void OnSerialize(NetworkWriter writer)
 		{
 			base.OnSerialize(writer);
-			writer.Write(this.backwardDirection);
+			writer.Write(backwardDirection);
 		}
 
 		public override void OnDeserialize(NetworkReader reader)
 		{
 			base.OnDeserialize(reader);
-			this.backwardDirection = reader.ReadVector3();
+			backwardDirection = reader.ReadVector3();
 		}
 
 		public override InterruptPriority GetMinimumInterruptPriority()

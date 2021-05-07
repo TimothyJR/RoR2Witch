@@ -16,18 +16,18 @@ namespace WitchMod.SkillStates
 		private float duration;
 		private float fireTime;
 		private bool hasFired = false;
-		private Transform fireBeam;
+		//private Transform fireBeam;
 		private GameObject fireBeamPrefab  = Resources.Load<GameObject>("Prefabs/Effects/Tracers/TracerToolbotRebar");
 		private GameObject impactPrefab = Resources.Load<GameObject>("Prefabs/Effects/MagmaWormImpactExplosion");
 		public override void OnEnter()
 		{
 			base.OnEnter();
 
-			this.duration = FireSecondary.baseDuration / this.attackSpeedStat;
-			this.fireTime = 0.2f * this.duration;
-			base.characterBody.SetAimTimer(2f);
+			duration = baseDuration / attackSpeedStat;
+			fireTime = 0.2f * duration;
+			characterBody.SetAimTimer(2f);
 
-			base.PlayAnimation("LeftArm, Override", "ShootGun", "ShootGun.playbackRate", this.duration);
+			PlayAnimation("LeftArm, Override", "ShootGun", "ShootGun.playbackRate", duration);
 		}
 
 		public override void OnExit()
@@ -45,7 +45,7 @@ namespace WitchMod.SkillStates
 		{
 			base.FixedUpdate();
 
-			if (base.fixedAge >= this.fireTime && !this.hasFired)
+			if (fixedAge >= fireTime && !hasFired)
 			{
 				// FOR SPAWNING VFX
 				//Transform spawnPoint = this.GetModelChildLocator().FindChild("MuzzleLeft");
@@ -57,42 +57,42 @@ namespace WitchMod.SkillStates
 				//{
 				//	this.fireBeam.GetComponent<ScaleParticleSystemDuration>().newDuration = this.duration;
 				//}
-				this.hasFired = true;
-				this.Fire();
+				hasFired = true;
+				Fire();
 
 			}
 
-			if (base.fixedAge >= this.duration && base.isAuthority)
+			if (fixedAge >= duration && isAuthority)
 			{
-				this.outer.SetNextStateToMain();
+				outer.SetNextStateToMain();
 				return;
 			}
 		}
 
 		private void Fire()
 		{
-			Ray aimRay = base.GetAimRay();
+			Ray aimRay = GetAimRay();
 
-			if(base.isAuthority)
+			if(isAuthority)
 			{
 				new BulletAttack
 				{
-					owner = base.gameObject,
-					weapon = base.gameObject,
+					owner = gameObject,
+					weapon = gameObject,
 					origin = aimRay.origin,
 					aimVector = aimRay.direction,
 					minSpread = 0.0f,
 					maxSpread = 0f,
-					damage = FireSecondary.damageCoefficient * this.damageStat,
+					damage = damageCoefficient * damageStat,
 					force = 100.0f,
 					muzzleName = "Muzzle",
 					hitEffectPrefab = impactPrefab,
-					isCrit = base.RollCrit(),
-					radius = FireSecondary.blastRadius,
+					isCrit = RollCrit(),
+					radius = blastRadius,
 					falloffModel = BulletAttack.FalloffModel.None,
 					stopperMask = LayerIndex.world.mask,
 					procCoefficient = procCoefficient,
-					maxDistance = FireSecondary.range,
+					maxDistance = range,
 					smartCollision = true,
 					damageType = DamageType.IgniteOnHit,
 					tracerEffectPrefab = fireBeamPrefab

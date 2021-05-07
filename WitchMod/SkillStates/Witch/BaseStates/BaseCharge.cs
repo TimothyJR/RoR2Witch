@@ -14,16 +14,16 @@ namespace WitchMod.SkillStates
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			this.duration = this.baseDuration / this.attackSpeedStat;
-			this.PlayChargeAnimation();
-			base.StartAimMode(this.duration + 2f, false);
+			duration = baseDuration / attackSpeedStat;
+			PlayChargeAnimation();
+			StartAimMode(duration + 2f, false);
 		}
 
 		public override void OnExit()
 		{
-			if (!this.outer.destroying)
+			if (!outer.destroying)
 			{
-				base.PlayAnimation("Gesture, Additive", "Empty");
+				PlayAnimation("Gesture, Additive", "Empty");
 			}
 
 			base.OnExit();
@@ -32,10 +32,10 @@ namespace WitchMod.SkillStates
 		public override void FixedUpdate()
 		{
 			base.FixedUpdate();
-			float charge = this.CalculateCharge();
-			if(base.isAuthority && ((!base.IsKeyDownAuthority() && base.fixedAge >= this.minCharge || base.fixedAge >= this.duration)))
+			float charge = CalculateCharge();
+			if(isAuthority && ((!IsKeyDownAuthority() && fixedAge >= minCharge || fixedAge >= duration)))
 			{
-				BaseChargeAttack nextState = this.GetNextState();
+				BaseChargeAttack nextState = GetNextState();
 				nextState.Charge = charge;
 				outer.SetNextState(nextState);
 			}
@@ -43,7 +43,7 @@ namespace WitchMod.SkillStates
 
 		protected float CalculateCharge()
 		{
-			return Mathf.Clamp01(base.fixedAge / this.duration);
+			return Mathf.Clamp01(fixedAge / duration);
 		}
 
 		public override InterruptPriority GetMinimumInterruptPriority()

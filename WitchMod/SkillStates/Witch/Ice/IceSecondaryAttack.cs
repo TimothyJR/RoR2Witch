@@ -20,25 +20,25 @@ namespace WitchMod.SkillStates
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			duration = IceSecondaryAttack.baseDuration / attackSpeedStat;
+			duration = baseDuration / attackSpeedStat;
 			fireTime = 0.35f * duration;
 			characterBody.SetAimTimer(2f);
 
-			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.duration);
+			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", duration);
 		}
 
 		public override void FixedUpdate()
 		{
 			base.FixedUpdate();
 
-			if (base.fixedAge >= this.fireTime)
+			if (fixedAge >= this.fireTime)
 			{
-				this.Fire();
+				Fire();
 			}
 
-			if (base.fixedAge >= this.duration && base.isAuthority)
+			if (fixedAge >= this.duration && base.isAuthority)
 			{
-				this.outer.SetNextStateToMain();
+				outer.SetNextStateToMain();
 				return;
 			}
 		}
@@ -48,7 +48,7 @@ namespace WitchMod.SkillStates
 			if (!hasFired)
 			{
 				hasFired = true;
-				Util.PlaySound("HenryBombThrow", base.gameObject);
+				Util.PlaySound("HenryBombThrow", gameObject);
 
 				if (base.isAuthority)
 				{
@@ -63,7 +63,7 @@ namespace WitchMod.SkillStates
 						RollCrit(),
 						DamageColorIndex.Default,
 						null,
-						IceSecondaryAttack.throwForce);
+						throwForce);
 
 					if (charge > 0.33f)
 					{
@@ -78,7 +78,7 @@ namespace WitchMod.SkillStates
 							RollCrit(),
 							DamageColorIndex.Default,
 							null,
-							IceSecondaryAttack.throwForce);
+							throwForce);
 
 						if (charge > 0.66f)
 						{
@@ -91,7 +91,7 @@ namespace WitchMod.SkillStates
 								RollCrit(),
 								DamageColorIndex.Default,
 								null,
-								IceSecondaryAttack.throwForce);
+								throwForce);
 						}
 					}
 

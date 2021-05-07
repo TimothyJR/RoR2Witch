@@ -1,5 +1,4 @@
 ﻿using WitchMod.SkillStates;
-using WitchMod.SkillStates.BaseStates;
 using System.Collections.Generic;
 using System;
 
@@ -27,6 +26,19 @@ namespace WitchMod.Modules
 			entityStates.Add(typeof(IceSpecialCharge));
 			entityStates.Add(typeof(IceSpecialAttack));
 
+			// Wind States
+			entityStates.Add(typeof(WindPrimaryFirstSlash));
+			entityStates.Add(typeof(WindPrimarySecondSlash));
+			entityStates.Add(typeof(WindSecondary));
+			entityStates.Add(typeof(WindUtility));
+			entityStates.Add(typeof(WindSpecial));
+
+			// Lightning States
+			entityStates.Add(typeof(LightningPrimary));
+			entityStates.Add(typeof(LightningSecondary));
+			entityStates.Add(typeof(LightningUtility));
+			entityStates.Add(typeof(LightningSpecial));
+
 			// Swap States
 			entityStates.Add(typeof(WitchSwitchFire));
 			entityStates.Add(typeof(WitchSwitchIce));
@@ -34,13 +46,6 @@ namespace WitchMod.Modules
 			entityStates.Add(typeof(WitchSwitchWind));
 			entityStates.Add(typeof(WitchSwap));
 			entityStates.Add(typeof(WitchSwitchSpell));
-
-			// Henry States
-			entityStates.Add(typeof(BaseMeleeAttack));
-			entityStates.Add(typeof(SlashCombo));
-			entityStates.Add(typeof(Roll));
-			entityStates.Add(typeof(ThrowBomb));
-			entityStates.Add(typeof(Shoot));
 		}
 	}
 }

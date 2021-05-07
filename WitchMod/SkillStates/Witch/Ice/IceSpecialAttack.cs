@@ -22,25 +22,25 @@ namespace WitchMod.SkillStates
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			duration = IceSpecialAttack.baseDuration / attackSpeedStat;
+			duration = baseDuration / attackSpeedStat;
 			fireTime = 0.35f * duration;
 			characterBody.SetAimTimer(2f);
 
-			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.duration);
+			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", duration);
 		}
 
 		public override void FixedUpdate()
 		{
 			base.FixedUpdate();
 
-			if (base.fixedAge >= this.fireTime)
+			if (fixedAge >= fireTime)
 			{
-				this.Fire();
+				Fire();
 			}
 
-			if (base.fixedAge >= this.duration && base.isAuthority)
+			if (fixedAge >= duration && isAuthority)
 			{
-				this.outer.SetNextStateToMain();
+				outer.SetNextStateToMain();
 				return;
 			}
 		}
@@ -50,7 +50,7 @@ namespace WitchMod.SkillStates
 			if (!hasFired)
 			{
 				hasFired = true;
-				Util.PlaySound("HenryBombThrow", base.gameObject);
+				Util.PlaySound("HenryBombThrow", gameObject);
 
 				if (base.isAuthority)
 				{

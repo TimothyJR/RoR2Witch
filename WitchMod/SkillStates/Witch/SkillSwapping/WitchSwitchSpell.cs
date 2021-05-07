@@ -11,10 +11,10 @@ namespace WitchMod.SkillStates
 		protected void SetAllSkills()
 		{
 			GenericSkill[] skills = GetCurrentPrimarySkill();
-			base.skillLocator.primary = skills[0];
-			base.skillLocator.secondary = skills[1];
-			base.skillLocator.utility = skills[2];
-			base.skillLocator.special = skills[3];
+			skillLocator.primary = skills[0];
+			skillLocator.secondary = skills[1];
+			skillLocator.utility = skills[2];
+			skillLocator.special = skills[3];
 		}
 
 		protected virtual GenericSkill[] GetCurrentPrimarySkill()
@@ -30,7 +30,7 @@ namespace WitchMod.SkillStates
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			this.SetAllSkills();
+			SetAllSkills();
 		}
 	}
 }

@@ -26,7 +26,6 @@ namespace WitchMod.SkillStates
 		private bool hasFired;
 
 		// Dash variables
-		private Vector3 previousPosition;
 		private float dashSpeed;
 
 		public override void OnEnter()
@@ -42,8 +41,6 @@ namespace WitchMod.SkillStates
 			{
 				characterMotor.velocity = Vector3.zero;
 			}
-
-			previousPosition = transform.position;
 
 			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", dashDuration);
 			Util.PlaySound(dodgeSoundString, gameObject);
@@ -70,7 +67,6 @@ namespace WitchMod.SkillStates
 					Vector3 vector = Vector3.up * dashSpeed;
 					characterMotor.velocity = vector;
 				}
-				previousPosition = transform.position;
 
 				if (isAuthority && fixedAge >= dashDuration)
 				{

@@ -21,10 +21,10 @@ namespace WitchMod.SkillStates
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			duration = IceUtilityAttack.baseDuration / attackSpeedStat;
+			duration = baseDuration / attackSpeedStat;
 			fireTime = 0.35f * duration;
 			freezeTime = Util.Remap(charge, 0.0f, 1.0f, minFreezeTime, maxFreezeTime);
-			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.duration);
+			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", duration);
 		}
 
 		public override void FixedUpdate()
@@ -56,14 +56,14 @@ namespace WitchMod.SkillStates
 				}
 
 				//TODO: Play freeze Animation
-				PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.freezeTime);
+				PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", freezeTime);
 				if (isAuthority)
 				{
 					Ray aimRay = GetAimRay();
-					base.characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, freezeTime);
+					characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, freezeTime);
 
 					GameObject projectile = Modules.Projectiles.iceUtilityProjectile;
-					float scaleValue = freezeTime * 2 + 1.0f;
+					//float scaleValue = freezeTime * 2 + 1.0f;
 					//projectile.transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
 
 					ProjectileImpactExplosion impact = projectile.GetComponent<ProjectileImpactExplosion>();

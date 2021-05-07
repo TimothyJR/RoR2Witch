@@ -102,8 +102,8 @@ namespace WitchMod.Modules
 				};
 			}
 
-			swordSwingEffect = Assets.LoadEffect("HenrySwordSwingEffect", true);
-			swordHitImpactEffect = Assets.LoadEffect("ImpactHenrySlash");
+			swordSwingEffect = LoadEffect("HenrySwordSwingEffect", true);
+			swordHitImpactEffect = LoadEffect("ImpactHenrySlash");
 		}
 
 		private static GameObject CreateTracer(string originalTracerName, string newTracerName)
@@ -263,8 +263,8 @@ namespace WitchMod.Modules
 		{
 			if (!commandoMat) commandoMat = Resources.Load<GameObject>("Prefabs/CharacterBodies/CommandoBody").GetComponentInChildren<CharacterModel>().baseRendererInfos[0].defaultMaterial;
 
-			Material mat = UnityEngine.Object.Instantiate<Material>(commandoMat);
-			Material tempMat = Assets.mainAssetBundle.LoadAsset<Material>(materialName);
+			Material mat = Object.Instantiate(commandoMat);
+			Material tempMat = mainAssetBundle.LoadAsset<Material>(materialName);
 
 			if (!tempMat)
 			{
@@ -285,17 +285,17 @@ namespace WitchMod.Modules
 
 		public static Material CreateMaterial(string materialName)
 		{
-			return Assets.CreateMaterial(materialName, 0f);
+			return CreateMaterial(materialName, 0f);
 		}
 
 		public static Material CreateMaterial(string materialName, float emission)
 		{
-			return Assets.CreateMaterial(materialName, emission, Color.white);
+			return CreateMaterial(materialName, emission, Color.white);
 		}
 
 		public static Material CreateMaterial(string materialName, float emission, Color emissionColor)
 		{
-			return Assets.CreateMaterial(materialName, emission, emissionColor, 0f);
+			return CreateMaterial(materialName, emission, emissionColor, 0f);
 		}
 	}
 }

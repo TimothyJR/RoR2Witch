@@ -48,7 +48,7 @@ namespace WitchMod.SkillStates
 			base.OnEnter();
 			duration = baseDuration / attackSpeedStat;
 			earlyExitTime = baseEarlyExitTime / attackSpeedStat;
-			animator = base.GetModelAnimator();
+			animator = GetModelAnimator();
 			animator.SetBool("attacking", true);
 			StartAimMode(0.5f + duration, false);
 			characterBody.outOfCombatStopwatch = 0f;

@@ -21,11 +21,11 @@ namespace WitchMod.SkillStates
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			this.duration = FirePrimary.baseDuration / this.attackSpeedStat;
-			this.fireTime = 0.35f * this.duration;
-			base.characterBody.SetAimTimer(2f);
+			duration = FirePrimary.baseDuration / attackSpeedStat;
+			fireTime = 0.35f * duration;
+			characterBody.SetAimTimer(2f);
 
-			base.PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.duration);
+			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", duration);
 		}
 
 		public override void OnExit()
@@ -35,14 +35,14 @@ namespace WitchMod.SkillStates
 
 		private void Fire()
 		{
-			if (!this.hasFired)
+			if (!hasFired)
 			{
-				this.hasFired = true;
-				Util.PlaySound("HenryBombThrow", base.gameObject);
+				hasFired = true;
+				Util.PlaySound("HenryBombThrow", gameObject);
 
-				if (base.isAuthority)
+				if (isAuthority)
 				{
-					Ray aimRay = base.GetAimRay();
+					Ray aimRay = GetAimRay();
 					Vector3 direction = -Vector3.up * distanceToSpawn;
 					Vector3 origin = aimRay.origin - direction;
 					Vector3 aimRayNoY = aimRay.direction.normalized;
@@ -54,10 +54,10 @@ namespace WitchMod.SkillStates
 						ProjectileManager.instance.FireProjectile(Modules.Projectiles.firePrimaryProjectile,
 							origin + right * Random.Range(-15f, 15f) + Vector3.up * Random.Range(0.0f, 30.0f),
 							Util.QuaternionSafeLookRotation(direction + aimRayNoY * 2.5f),
-							base.gameObject,
-							FirePrimary.damageCoefficient * this.damageStat,
+							gameObject,
+							FirePrimary.damageCoefficient * damageStat,
 							4000f,
-							base.RollCrit(),
+							RollCrit(),
 							DamageColorIndex.Default,
 							null,
 							FireSpecial.throwForce);
@@ -73,14 +73,14 @@ namespace WitchMod.SkillStates
 		{
 			base.FixedUpdate();
 
-			if (base.fixedAge >= this.fireTime)
+			if (fixedAge >= fireTime)
 			{
-				this.Fire();
+				Fire();
 			}
 
-			if (base.fixedAge >= this.duration && base.isAuthority)
+			if (fixedAge >= duration && isAuthority)
 			{
-				this.outer.SetNextStateToMain();
+				outer.SetNextStateToMain();
 				return;
 			}
 		}

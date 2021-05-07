@@ -14,9 +14,9 @@ namespace WitchMod.SkillStates
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			if(base.isAuthority)
+			if(isAuthority)
 			{
-				this.stanceMachine = base.gameObject.GetComponents<EntityStateMachine>().FirstOrDefault((EntityStateMachine c) => c.customName == "Stance");
+				stanceMachine = gameObject.GetComponents<EntityStateMachine>().FirstOrDefault((EntityStateMachine c) => c.customName == "Stance");
 				WitchSwitchSpell switchSpell = ((stanceMachine != null) ? stanceMachine.state : null) as WitchSwitchSpell;
 
 				if(switchSpell != null && switchSpell.GetState() != null)
@@ -24,10 +24,10 @@ namespace WitchMod.SkillStates
 					nextType = switchSpell.GetState();
 				}
 
-				if (base.isAuthority)
+				if (isAuthority)
 				{
 					stanceMachine.SetNextState(EntityStateCatalog.InstantiateState(nextType));
-					this.outer.SetNextStateToMain();
+					outer.SetNextStateToMain();
 					return;
 				}
 			}
@@ -36,7 +36,7 @@ namespace WitchMod.SkillStates
 		public override void OnSerialize(NetworkWriter writer)
 		{
 			base.OnSerialize(writer);
-			EntityStateIndex stateIndex = EntityStateCatalog.GetStateIndex(this.nextType);
+			EntityStateIndex stateIndex = EntityStateCatalog.GetStateIndex(nextType);
 			writer.Write(stateIndex);
 		}
 
@@ -44,7 +44,7 @@ namespace WitchMod.SkillStates
 		{
 			base.OnDeserialize(reader);
 			EntityStateIndex entityStateIndex = reader.ReadEntityStateIndex();
-			this.nextType = EntityStateCatalog.GetStateType(entityStateIndex);
+			nextType = EntityStateCatalog.GetStateType(entityStateIndex);
 		}
 	}
 }
