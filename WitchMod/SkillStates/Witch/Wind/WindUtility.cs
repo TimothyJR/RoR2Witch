@@ -12,17 +12,13 @@ namespace WitchMod.SkillStates
 		public static float damageCoefficient = 16f;
 		public static float procCoefficient = 1f;
 		public static float baseExplosionDuration = 0.0f;
-		public static float throwForce = 0f;
 		public static string dodgeSoundString = "HenryRoll";
 		public static float dodgeFOV = EntityStates.Commando.DodgeState.dodgeFOV;
 
 		// Dodge statics
-		public static float initialSpeedCoefficient = 5f;
+		public static float initialSpeedCoefficient = 10f;
 		public static float finalSpeedCoefficient = 2.5f;
 		public static float dashDuration = 0.5f;
-
-		// General variables
-		private Animator animator;
 
 		// Explosion variables
 		private float explosionDuration;
@@ -30,70 +26,55 @@ namespace WitchMod.SkillStates
 		private bool hasFired;
 
 		// Dash variables
-		private Vector3 backwardDirection;
 		private Vector3 previousPosition;
 		private float dashSpeed;
 
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			this.explosionDuration = WindUtility.baseExplosionDuration / this.attackSpeedStat;
-			this.fireTime = 0.35f * this.explosionDuration;
-			base.characterBody.SetAimTimer(2f);
-			this.animator = base.GetModelAnimator();
+			explosionDuration = baseExplosionDuration / attackSpeedStat;
+			fireTime = 0.35f * explosionDuration;
+			characterBody.SetAimTimer(2f);
 
-			if (base.isAuthority && base.inputBank && base.characterDirection)
+			RecalculateDashSpeed();
+
+			if (characterMotor && characterDirection)
 			{
-				this.backwardDirection = -base.GetAimRay().direction;
+				characterMotor.velocity = Vector3.zero;
 			}
 
-			this.RecalculateDashSpeed();
+			previousPosition = transform.position;
 
-			if (base.characterMotor && base.characterDirection)
-			{
-				base.characterMotor.velocity.y = 0f;
-				base.characterMotor.velocity = this.backwardDirection * this.dashSpeed;
-			}
-
-			Vector3 velocity = base.characterMotor ? base.characterMotor.velocity : Vector3.zero;
-			this.previousPosition = base.transform.position - velocity;
-
-			base.PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.explosionDuration);
-
+			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", dashDuration);
+			Util.PlaySound(dodgeSoundString, gameObject);
 		}
 
 		public override void FixedUpdate()
 		{
 			base.FixedUpdate();
 
-			if (base.fixedAge >= this.fireTime)
+			if (fixedAge >= fireTime)
 			{
-				this.Fire();
-				this.StartDash();
+				Fire();
 			}
 
 			// Dash related
 			if (hasFired)
 			{
-				this.RecalculateDashSpeed();
+				RecalculateDashSpeed();
 
-				if (base.cameraTargetParams) base.cameraTargetParams.fovOverride = Mathf.Lerp(WindUtility.dodgeFOV, 60f, base.fixedAge / WindUtility.dashDuration);
+				if (cameraTargetParams) cameraTargetParams.fovOverride = Mathf.Lerp(dodgeFOV, 60f, fixedAge / dashDuration);
 
-				Vector3 normalized = (base.transform.position - this.previousPosition).normalized;
-				if (base.characterMotor && base.characterDirection && normalized != Vector3.zero)
+				if (characterMotor && characterDirection)
 				{
-					Vector3 vector = normalized * this.dashSpeed;
-					float d = Mathf.Max(Vector3.Dot(vector, this.backwardDirection), 0f);
-					vector = this.backwardDirection * d;
-					//vector.y = 0f;
-
-					base.characterMotor.velocity = vector;
+					Vector3 vector = Vector3.up * dashSpeed;
+					characterMotor.velocity = vector;
 				}
-				this.previousPosition = base.transform.position;
+				previousPosition = transform.position;
 
-				if (base.isAuthority && base.fixedAge >= WindUtility.dashDuration)
+				if (isAuthority && fixedAge >= dashDuration)
 				{
-					this.outer.SetNextStateToMain();
+					outer.SetNextStateToMain();
 					return;
 				}
 			}
@@ -101,63 +82,49 @@ namespace WitchMod.SkillStates
 
 		private void Fire()
 		{
-			if (!this.hasFired)
+			if (!hasFired)
 			{
-				this.hasFired = true;
-				Util.PlaySound("HenryBombThrow", base.gameObject);
+				hasFired = true;
+				Util.PlaySound("HenryBombThrow", gameObject);
 
-				if (base.isAuthority)
+				if (isAuthority)
 				{
-					Ray aimRay = base.GetAimRay();
+					Ray aimRay = GetAimRay();
 
 					ProjectileManager.instance.FireProjectile(Modules.Projectiles.fireUtilityExplosion,
 						aimRay.origin,
 						Util.QuaternionSafeLookRotation(aimRay.direction),
-						base.gameObject,
-						WindUtility.damageCoefficient * this.damageStat,
+						gameObject,
+						damageCoefficient * damageStat,
 						4000f,
-						base.RollCrit(),
+						RollCrit(),
 						DamageColorIndex.Default,
 						null,
-						WindUtility.throwForce);
+						0.0f);
 				}
-			}
-		}
-
-		private void StartDash()
-		{
-			base.PlayAnimation("FullBody, Override", "Roll", "Roll.playbackRate", WindUtility.dashDuration);
-			Util.PlaySound(WindUtility.dodgeSoundString, base.gameObject);
-
-			if (NetworkServer.active)
-			{
-				base.characterBody.AddTimedBuff(Modules.Buffs.armorBuff, 3f * WindUtility.dashDuration);
-				base.characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, 0.5f * WindUtility.dashDuration);
 			}
 		}
 
 		private void RecalculateDashSpeed()
 		{
-			this.dashSpeed = this.moveSpeedStat * Mathf.Lerp(WindUtility.initialSpeedCoefficient, WindUtility.finalSpeedCoefficient, base.fixedAge / WindUtility.dashDuration);
+			dashSpeed = moveSpeedStat * Mathf.Lerp(initialSpeedCoefficient, finalSpeedCoefficient, fixedAge / dashDuration);
 		}
 
 		public override void OnExit()
 		{
-			if (base.cameraTargetParams) base.cameraTargetParams.fovOverride = -1f;
+			if (cameraTargetParams) cameraTargetParams.fovOverride = -1f;
 			base.OnExit();
-			base.characterMotor.disableAirControlUntilCollision = false;
+			characterMotor.disableAirControlUntilCollision = false;
 		}
 
 		public override void OnSerialize(NetworkWriter writer)
 		{
 			base.OnSerialize(writer);
-			writer.Write(this.backwardDirection);
 		}
 
 		public override void OnDeserialize(NetworkReader reader)
 		{
 			base.OnDeserialize(reader);
-			this.backwardDirection = reader.ReadVector3();
 		}
 
 		public override InterruptPriority GetMinimumInterruptPriority()

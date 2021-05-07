@@ -66,7 +66,7 @@ namespace WitchMod.SkillStates
 		{
 			base.FixedUpdate();
 
-			if (base.fixedAge >= this.fireTime)
+			if (base.fixedAge >= this.fireTime && !hasFired)
 			{
 				this.Fire();
 				this.StartDash();
@@ -101,27 +101,25 @@ namespace WitchMod.SkillStates
 
 		private void Fire()
 		{
-			if (!this.hasFired)
+			this.hasFired = true;
+			Util.PlaySound("HenryBombThrow", base.gameObject);
+
+			if (base.isAuthority)
 			{
-				this.hasFired = true;
-				Util.PlaySound("HenryBombThrow", base.gameObject);
+				Ray aimRay = base.GetAimRay();
 
-				if (base.isAuthority)
-				{
-					Ray aimRay = base.GetAimRay();
-
-					ProjectileManager.instance.FireProjectile(Modules.Projectiles.fireUtilityExplosion,
-						aimRay.origin,
-						Util.QuaternionSafeLookRotation(aimRay.direction),
-						base.gameObject,
-						FireUtility.damageCoefficient * this.damageStat,
-						4000f,
-						base.RollCrit(),
-						DamageColorIndex.Default,
-						null,
-						FireUtility.throwForce);
-				}
+				ProjectileManager.instance.FireProjectile(Modules.Projectiles.fireUtilityExplosion,
+					aimRay.origin,
+					Util.QuaternionSafeLookRotation(aimRay.direction),
+					base.gameObject,
+					FireUtility.damageCoefficient * this.damageStat,
+					4000f,
+					base.RollCrit(),
+					DamageColorIndex.Default,
+					null,
+					FireUtility.throwForce);
 			}
+
 		}
 
 		private void StartDash()

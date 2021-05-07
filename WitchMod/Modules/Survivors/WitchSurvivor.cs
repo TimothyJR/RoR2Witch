@@ -21,7 +21,7 @@ namespace WitchMod.Modules.Survivors
 			armor = 20f,
 			armorGrowth = 0f,
 			bodyName = "HenryBody",
-			bodyNameToken = WitchPlugin.developerPrefix + "_HENRY_BODY_NAME",
+			bodyNameToken = WitchPlugin.developerPrefix + "_WITCH_BODY_NAME",
 			bodyColor = Color.grey,
 			characterPortrait = Modules.Assets.LoadCharacterIcon("Henry"),
 			crosshair = Modules.Assets.LoadCrosshair("Standard"),
@@ -30,7 +30,7 @@ namespace WitchMod.Modules.Survivors
 			healthRegen = 1.5f,
 			jumpCount = 1,
 			maxHealth = 110f,
-			subtitleNameToken = WitchPlugin.developerPrefix + "_HENRY_BODY_SUBTITLE",
+			subtitleNameToken = WitchPlugin.developerPrefix + "_WITCH_BODY_SUBTITLE",
 			podPrefab = Resources.Load<GameObject>("Prefabs/NetworkedObjects/SurvivorPod")
 		};
 
@@ -167,11 +167,35 @@ namespace WitchMod.Modules.Survivors
 				keywordTokens = new string[] { "KEYWORD_AGILE" }
 			});
 
-			SkillDef meleeSkillDef = Modules.Skills.CreatePrimarySkillDef(new EntityStates.SerializableEntityStateType(typeof(SkillStates.SlashCombo)), "Weapon", prefix + "_WITCH_BODY_PRIMARY_SLASH_NAME", prefix + "_WITCH_BODY_PRIMARY_SLASH_DESCRIPTION", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPrimaryIcon"), true);
+			SkillDef lightningPrimary = Skills.CreateSkillDef(new SkillDefInfo
+			{
+				skillName = prefix + "_WITCH_BODY_PRIMARY_LIGHTNING_NAME",
+				skillNameToken = prefix + "_WITCH_BODY_PRIMARY_LIGHTNING_NAME",
+				skillDescriptionToken = prefix + "_WITCH_BODY_PRIMARY_LIGHTNING_DESCRIPTION",
+				skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPrimaryIcon"),
+				activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.LightningPrimary)),
+				activationStateMachineName = "Weapon",
+				baseMaxStock = 1,
+				baseRechargeInterval = 0.0f,
+				beginSkillCooldownOnSkillEnd = false,
+				canceledFromSprinting = false,
+				forceSprintDuringState = false,
+				fullRestockOnAssign = true,
+				interruptPriority = EntityStates.InterruptPriority.Any,
+				resetCooldownTimerOnUse = false,
+				isCombatSkill = true,
+				mustKeyPress = false,
+				cancelSprintingOnActivation = false,
+				rechargeStock = 1,
+				requiredStock = 0,
+				stockToConsume = 0,
+				keywordTokens = new string[] { "KEYWORD_AGILE" }
+			});
+
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchFire", new SkillDef[] { fireSpreadSkillDef }, true, 0);
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchIce", new SkillDef[] { iceSpikeDef }, false, 0);
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchWind", new SkillDef[] { windSlashDef }, false, 0);
-			Modules.Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { meleeSkillDef }, false, 0);
+			Modules.Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { lightningPrimary }, false, 0);
 			#endregion
 
 			#region Secondary
@@ -224,13 +248,13 @@ namespace WitchMod.Modules.Survivors
 				stockToConsume = 1
 			});
 
-			SkillDef shootSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+			SkillDef windSecondary = Modules.Skills.CreateSkillDef(new SkillDefInfo
 			{
-				skillName = prefix + "_WITCH_BODY_SECONDARY_GUN_NAME",
-				skillNameToken = prefix + "_WITCH_BODY_SECONDARY_GUN_NAME",
-				skillDescriptionToken = prefix + "_WITCH_BODY_SECONDARY_GUN_DESCRIPTION",
-				skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
-				activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Shoot)),
+				skillName = prefix + "_WITCH_BODY_SECONDARY_WIND_NAME",
+				skillNameToken = prefix + "_WITCH_BODY_SECONDARY_WIND_NAME",
+				skillDescriptionToken = prefix + "_WITCH_BODY_SECONDARY_WIND_DESCRIPTION",
+				skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialIcon"),
+				activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.WindSecondary)),
 				activationStateMachineName = "Slide",
 				baseMaxStock = 1,
 				baseRechargeInterval = 1f,
@@ -242,16 +266,40 @@ namespace WitchMod.Modules.Survivors
 				resetCooldownTimerOnUse = false,
 				isCombatSkill = true,
 				mustKeyPress = false,
-				cancelSprintingOnActivation = false,
+				cancelSprintingOnActivation = true,
 				rechargeStock = 1,
 				requiredStock = 1,
-				stockToConsume = 1,
-				keywordTokens = new string[] { "KEYWORD_AGILE" }
+				stockToConsume = 1
 			});
+
+			SkillDef lightningSecondary = Modules.Skills.CreateSkillDef(new SkillDefInfo
+			{
+				skillName = prefix + "_WITCH_BODY_SECONDARY_LIGHTNING_NAME",
+				skillNameToken = prefix + "_WITCH_BODY_SECONDARY_LIGHTNING_NAME",
+				skillDescriptionToken = prefix + "_WITCH_BODY_SECONDARY_LIGHTNING_DESCRIPTION",
+				skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialIcon"),
+				activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.LightningSecondary)),
+				activationStateMachineName = "Slide",
+				baseMaxStock = 1,
+				baseRechargeInterval = 1f,
+				beginSkillCooldownOnSkillEnd = false,
+				canceledFromSprinting = false,
+				forceSprintDuringState = false,
+				fullRestockOnAssign = true,
+				interruptPriority = EntityStates.InterruptPriority.Skill,
+				resetCooldownTimerOnUse = false,
+				isCombatSkill = true,
+				mustKeyPress = false,
+				cancelSprintingOnActivation = true,
+				rechargeStock = 1,
+				requiredStock = 1,
+				stockToConsume = 1
+			});
+
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchFire", new SkillDef[] { beamSkillDef }, true, 1);
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchIce", new SkillDef[] { iceBeamDef }, false, 1);
-			Modules.Skills.CreateFamily(bodyPrefab, "WitchWind", new SkillDef[] { shootSkillDef }, false, 1);
-			Modules.Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { shootSkillDef }, false, 1);
+			Modules.Skills.CreateFamily(bodyPrefab, "WitchWind", new SkillDef[] { windSecondary }, false, 1);
+			Modules.Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { lightningSecondary }, false, 1);
 			#endregion
 
 			#region Utility
@@ -303,33 +351,58 @@ namespace WitchMod.Modules.Survivors
 				stockToConsume = 1
 			});
 
-			SkillDef rollSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+			SkillDef windJump = Skills.CreateSkillDef(new SkillDefInfo
 			{
-				skillName = prefix + "_WITCH_BODY_UTILITY_ROLL_NAME",
-				skillNameToken = prefix + "_WITCH_BODY_UTILITY_ROLL_NAME",
-				skillDescriptionToken = prefix + "_WITCH_BODY_UTILITY_ROLL_DESCRIPTION",
-				skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texUtilityIcon"),
-				activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Roll)),
+				skillName = prefix + "_WITCH_BODY_UTILITY_WIND_NAME",
+				skillNameToken = prefix + "_WITCH_BODY_UTILITY_WIND_NAME",
+				skillDescriptionToken = prefix + "_WITCH_BODY_UTILITY_WIND_DESCRIPTION",
+				skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialIcon"),
+				activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.WindUtility)),
 				activationStateMachineName = "Body",
 				baseMaxStock = 1,
-				baseRechargeInterval = 4f,
+				baseRechargeInterval = 1f,
 				beginSkillCooldownOnSkillEnd = false,
 				canceledFromSprinting = false,
-				forceSprintDuringState = true,
+				forceSprintDuringState = false,
 				fullRestockOnAssign = true,
-				interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+				interruptPriority = EntityStates.InterruptPriority.Skill,
 				resetCooldownTimerOnUse = false,
-				isCombatSkill = false,
+				isCombatSkill = true,
 				mustKeyPress = false,
-				cancelSprintingOnActivation = false,
+				cancelSprintingOnActivation = true,
 				rechargeStock = 1,
 				requiredStock = 1,
 				stockToConsume = 1
 			});
+
+			SkillDef lightningUtility = Skills.CreateSkillDef(new SkillDefInfo
+			{
+				skillName = prefix + "_WITCH_BODY_UTILITY_LIGHTNING_NAME",
+				skillNameToken = prefix + "_WITCH_BODY_UTILITY_LIGHTNING_NAME",
+				skillDescriptionToken = prefix + "_WITCH_BODY_UTILITY_LIGHTNING_DESCRIPTION",
+				skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialIcon"),
+				activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.LightningUtility)),
+				activationStateMachineName = "Body",
+				baseMaxStock = 1,
+				baseRechargeInterval = 1f,
+				beginSkillCooldownOnSkillEnd = false,
+				canceledFromSprinting = false,
+				forceSprintDuringState = false,
+				fullRestockOnAssign = true,
+				interruptPriority = EntityStates.InterruptPriority.Skill,
+				resetCooldownTimerOnUse = false,
+				isCombatSkill = true,
+				mustKeyPress = false,
+				cancelSprintingOnActivation = true,
+				rechargeStock = 1,
+				requiredStock = 1,
+				stockToConsume = 1
+			});
+
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchFire", new SkillDef[] { explosionSkillDef }, true, 2);
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchIce", new SkillDef[] { iceSelfFreeze }, false, 2);
-			Modules.Skills.CreateFamily(bodyPrefab, "WitchWind", new SkillDef[] { beamSkillDef }, false, 2);
-			Modules.Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { rollSkillDef }, false, 2);
+			Modules.Skills.CreateFamily(bodyPrefab, "WitchWind", new SkillDef[] { windJump }, false, 2);
+			Modules.Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { lightningUtility }, false, 2);
 			#endregion
 
 			#region Special
@@ -381,16 +454,16 @@ namespace WitchMod.Modules.Survivors
 				stockToConsume = 1
 			});
 
-			SkillDef bombSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+			SkillDef windSpecial = Modules.Skills.CreateSkillDef(new SkillDefInfo
 			{
-				skillName = prefix + "_WITCH_BODY_SPECIAL_BOMB_NAME",
-				skillNameToken = prefix + "_WITCH_BODY_SPECIAL_BOMB_NAME",
-				skillDescriptionToken = prefix + "_WITCH_BODY_SPECIAL_BOMB_DESCRIPTION",
+				skillName = prefix + "_WITCH_BODY_SPECIAL_WIND_NAME",
+				skillNameToken = prefix + "_WITCH_BODY_SPECIAL_WIND_NAME",
+				skillDescriptionToken = prefix + "_WITCH_BODY_SPECIAL_WIND_DESCRIPTION",
 				skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialIcon"),
-				activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.ThrowBomb)),
+				activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.WindSpecial)),
 				activationStateMachineName = "Slide",
 				baseMaxStock = 1,
-				baseRechargeInterval = 10f,
+				baseRechargeInterval = 1f,
 				beginSkillCooldownOnSkillEnd = false,
 				canceledFromSprinting = false,
 				forceSprintDuringState = false,
@@ -404,10 +477,35 @@ namespace WitchMod.Modules.Survivors
 				requiredStock = 1,
 				stockToConsume = 1
 			});
+
+			SkillDef lightningSpecial = Modules.Skills.CreateSkillDef(new SkillDefInfo
+			{
+				skillName = prefix + "_WITCH_BODY_SPECIAL_LIGHTNING_NAME",
+				skillNameToken = prefix + "_WITCH_BODY_SPECIAL_LIGHTNING_NAME",
+				skillDescriptionToken = prefix + "_WITCH_BODY_SPECIAL_LIGHTNING_DESCRIPTION",
+				skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialIcon"),
+				activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.LightningSpecial)),
+				activationStateMachineName = "Slide",
+				baseMaxStock = 1,
+				baseRechargeInterval = 1f,
+				beginSkillCooldownOnSkillEnd = false,
+				canceledFromSprinting = false,
+				forceSprintDuringState = false,
+				fullRestockOnAssign = true,
+				interruptPriority = EntityStates.InterruptPriority.Skill,
+				resetCooldownTimerOnUse = false,
+				isCombatSkill = true,
+				mustKeyPress = false,
+				cancelSprintingOnActivation = true,
+				rechargeStock = 1,
+				requiredStock = 1,
+				stockToConsume = 1
+			});
+
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchFire", new SkillDef[] { fireMeteorSkillDef }, true, 3);
 			Modules.Skills.CreateFamily(bodyPrefab, "WitchIce", new SkillDef[] { iceExplosion }, false, 3);
-			Modules.Skills.CreateFamily(bodyPrefab, "WitchWind", new SkillDef[] { rollSkillDef }, false, 3);
-			Modules.Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { bombSkillDef }, false, 3);
+			Modules.Skills.CreateFamily(bodyPrefab, "WitchWind", new SkillDef[] { windSpecial }, false, 3);
+			Modules.Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { lightningSpecial }, false, 3);
 			#endregion
 		}
 
@@ -417,7 +515,6 @@ namespace WitchMod.Modules.Survivors
 			CharacterModel characterModel = model.GetComponent<CharacterModel>();
 
 			ModelSkinController skinController = model.AddComponent<ModelSkinController>();
-			ChildLocator childLocator = model.GetComponent<ChildLocator>();
 
 			SkinnedMeshRenderer mainRenderer = characterModel.mainSkinnedMeshRenderer;
 
@@ -426,7 +523,7 @@ namespace WitchMod.Modules.Survivors
 			List<SkinDef> skins = new List<SkinDef>();
 
 			#region DefaultSkin
-			SkinDef defaultSkin = Modules.Skins.CreateSkinDef(WitchPlugin.developerPrefix + "_HENRY_BODY_DEFAULT_SKIN_NAME",
+			SkinDef defaultSkin = Modules.Skins.CreateSkinDef(WitchPlugin.developerPrefix + "_WITCH_BODY_DEFAULT_SKIN_NAME",
 				Assets.mainAssetBundle.LoadAsset<Sprite>("texMainSkin"),
 				defaultRenderers,
 				mainRenderer,
@@ -464,7 +561,7 @@ namespace WitchMod.Modules.Survivors
 				masteryMat
 			});
 
-			SkinDef masterySkin = Modules.Skins.CreateSkinDef(WitchPlugin.developerPrefix + "_HENRY_BODY_MASTERY_SKIN_NAME",
+			SkinDef masterySkin = Modules.Skins.CreateSkinDef(WitchPlugin.developerPrefix + "_WITCH_BODY_MASTERY_SKIN_NAME",
 				Assets.mainAssetBundle.LoadAsset<Sprite>("texMasteryAchievement"),
 				masteryRendererInfos,
 				mainRenderer,
