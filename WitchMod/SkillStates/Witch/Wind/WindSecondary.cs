@@ -5,60 +5,43 @@ using UnityEngine;
 
 namespace WitchMod.SkillStates
 {
-	class WindSecondary : BaseSkillState
+	class WindSecondary : BaseMeleeSkill
 	{
-		public static float damageCoefficient = 16f;
-		public static float procCoefficient = 1f;
-		public static float baseDuration = 0.65f;
-		public static float throwForce = 80f;
+		public static float dodgeFOV = EntityStates.Commando.DodgeState.dodgeFOV;
 
-		private float duration;
-		private float fireTime;
-		private bool hasFired;
-		private int projectileCount = 5;
-		private float coneSize = 60.0f;
+		private float dashSpeed = 0.0f;
+		private float initialSpeedCoefficient = 6f;
+		private float finalSpeedCoefficient = 5f;
+		private Vector3 direction;
 
 		public override void OnEnter()
 		{
+			damage = DamageType.Generic;
+			damageCoefficient = Modules.StaticValues.swordDamageCoefficient;
+			procCoefficient = 1f;
+			pushForce = 300f;
+			bonusForce = Vector3.zero;
+			baseDuration = 0.5f;
+			attackStartTime = 0.1f;
+			attackEndTime = 0.45f;
+			baseEarlyExitTime = 0.4f;
+			hitStopDuration = 0.012f;
+			attackRecoil = 0.5f;
+			hitHopVelocity = 4f;
+			swingEffectPrefab = Modules.Assets.swordSwingEffect;
+			hitEffectPrefab = Modules.Assets.swordHitImpactEffect;
+			impactSound = Modules.Assets.swordHitSoundEvent.index;
+			baseEarlyExitTime = 0.0f;
+			direction = GetAimRay().direction;
+
 			base.OnEnter();
-			this.duration = WindSecondary.baseDuration / this.attackSpeedStat;
-			this.fireTime = 0.35f * this.duration;
-			base.characterBody.SetAimTimer(2f);
 
-			base.PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.duration);
-		}
+			characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, Duration);
 
-		private void Fire()
-		{
-			if (!this.hasFired)
+			if (characterMotor && characterDirection)
 			{
-				this.hasFired = true;
-				Util.PlaySound("HenryBombThrow", base.gameObject);
-
-				if (base.isAuthority)
-				{
-					Ray aimRay = base.GetAimRay();
-
-					Vector3 up = Vector3.Cross(aimRay.direction, Quaternion.Euler(0.0f, characterDirection.yaw, 0.0f) * Vector3.right);
-					float increment = coneSize / (projectileCount - 1);
-					float start = -coneSize / 2;
-
-					for(int i = 0; i < projectileCount; i++)
-					{
-						Quaternion lerp = Util.QuaternionSafeLookRotation(aimRay.direction) * Quaternion.AngleAxis(start + (i * increment), up);
-
-						ProjectileManager.instance.FireProjectile(Modules.Projectiles.firePrimaryProjectile,
-							aimRay.origin,
-							lerp,
-							base.gameObject,
-							WindSecondary.damageCoefficient * this.damageStat,
-							4000f,
-							base.RollCrit(),
-							DamageColorIndex.Default,
-							null,
-							WindSecondary.throwForce);
-					}
-				}
+				characterMotor.velocity.y = 0f;
+				characterMotor.velocity = direction * dashSpeed;
 			}
 		}
 
@@ -66,21 +49,58 @@ namespace WitchMod.SkillStates
 		{
 			base.FixedUpdate();
 
-			if (base.fixedAge >= this.fireTime)
+			RecalculateDashSpeed();
+			if (cameraTargetParams)
 			{
-				this.Fire();
+				cameraTargetParams.fovOverride = Mathf.Lerp(dodgeFOV, 60f, fixedAge / Duration);
 			}
 
-			if (base.fixedAge >= this.duration && base.isAuthority)
+			Ray aimRay = GetAimRay();
+			if (characterMotor && characterDirection)
 			{
-				this.outer.SetNextStateToMain();
-				return;
+				characterMotor.velocity = direction * dashSpeed;
 			}
 		}
 
-		public override InterruptPriority GetMinimumInterruptPriority()
+		public override void OnExit()
 		{
-			return InterruptPriority.PrioritySkill;
+			characterMotor.velocity *= 0.2f;
+			base.OnExit();
+		}
+
+		private void RecalculateDashSpeed()
+		{
+			dashSpeed = moveSpeedStat * Mathf.Lerp(initialSpeedCoefficient, finalSpeedCoefficient, fixedAge / Duration);
+		}
+
+		protected override string GetAnimationName()
+		{
+			return "Slash1";
+		}
+
+		protected override string GetMuzzleName()
+		{
+			return "SwingLeft";
+		}
+
+		protected override string GetPlaybackRate()
+		{
+			return "Slash.playbackRate";
+		}
+
+		protected override string GetHitBoxName()
+		{
+			return "Sword";
+		}
+
+		protected override bool GetInputButtonDown()
+		{
+			return inputBank.skill2.down;
+		}
+
+		protected override BaseMeleeSkill GetNextState()
+		{
+			return null;
 		}
 	}
 }

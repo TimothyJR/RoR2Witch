@@ -122,12 +122,6 @@ namespace WitchMod.SkillStates
 		{
 			PlayAnimation("FullBody, Override", "Roll", "Roll.playbackRate", dashDuration);
 			Util.PlaySound(dodgeSoundString, gameObject);
-
-			if (NetworkServer.active)
-			{
-				characterBody.AddTimedBuff(Modules.Buffs.armorBuff, 3f * dashDuration);
-				characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, 0.5f * dashDuration);
-			}
 		}
 
 		private void RecalculateDashSpeed()

@@ -42,6 +42,7 @@ namespace WitchMod.SkillStates
 		protected Animator animator;
 
 		protected bool HasFired { get { return hasFired; } }
+		protected float Duration { get { return duration; } }
 
 		public override void OnEnter()
 		{
