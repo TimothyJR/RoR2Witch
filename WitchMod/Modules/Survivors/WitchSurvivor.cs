@@ -114,8 +114,8 @@ namespace WitchMod.Modules.Survivors
 				mustKeyPress = false,
 				cancelSprintingOnActivation = true,
 				rechargeStock = 1,
-				requiredStock = 1,
-				stockToConsume = 1
+				requiredStock = 0,
+				stockToConsume = 0
 			});
 
 			SkillDef iceSpikeDef = Skills.CreateSkillDef(new SkillDefInfo
@@ -138,8 +138,8 @@ namespace WitchMod.Modules.Survivors
 				mustKeyPress = false,
 				cancelSprintingOnActivation = true,
 				rechargeStock = 1,
-				requiredStock = 1,
-				stockToConsume = 1
+				requiredStock = 0,
+				stockToConsume = 0
 			});
 
 			SkillDef windSlashDef = Skills.CreateSkillDef(new SkillDefInfo
@@ -185,11 +185,10 @@ namespace WitchMod.Modules.Survivors
 				resetCooldownTimerOnUse = false,
 				isCombatSkill = true,
 				mustKeyPress = false,
-				cancelSprintingOnActivation = false,
+				cancelSprintingOnActivation = true,
 				rechargeStock = 1,
 				requiredStock = 0,
 				stockToConsume = 0,
-				keywordTokens = new string[] { "KEYWORD_AGILE" }
 			});
 
 			Skills.CreateFamily(bodyPrefab, "WitchFire", new SkillDef[] { fireSpreadSkillDef }, true, 0);
@@ -217,11 +216,10 @@ namespace WitchMod.Modules.Survivors
 				resetCooldownTimerOnUse = false,
 				isCombatSkill = true,
 				mustKeyPress = false,
-				cancelSprintingOnActivation = false,
+				cancelSprintingOnActivation = true,
 				rechargeStock = 1,
 				requiredStock = 1,
 				stockToConsume = 1,
-				keywordTokens = new string[] { "KEYWORD_AGILE" }
 			});
 
 			SkillDef iceBeamDef = Skills.CreateSkillDef(new SkillDefInfo
@@ -266,10 +264,11 @@ namespace WitchMod.Modules.Survivors
 				resetCooldownTimerOnUse = false,
 				isCombatSkill = true,
 				mustKeyPress = false,
-				cancelSprintingOnActivation = true,
+				cancelSprintingOnActivation = false,
 				rechargeStock = 1,
 				requiredStock = 1,
-				stockToConsume = 1
+				stockToConsume = 1,
+				keywordTokens = new string[] { "KEYWORD_AGILE" }
 			});
 
 			SkillDef lightningSecondary = Skills.CreateSkillDef(new SkillDefInfo
@@ -321,7 +320,7 @@ namespace WitchMod.Modules.Survivors
 				resetCooldownTimerOnUse = false,
 				isCombatSkill = true,
 				mustKeyPress = false,
-				cancelSprintingOnActivation = false,
+				cancelSprintingOnActivation = true,
 				rechargeStock = 1,
 				requiredStock = 1,
 				stockToConsume = 1
@@ -369,10 +368,11 @@ namespace WitchMod.Modules.Survivors
 				resetCooldownTimerOnUse = false,
 				isCombatSkill = true,
 				mustKeyPress = false,
-				cancelSprintingOnActivation = true,
+				cancelSprintingOnActivation = false,
 				rechargeStock = 1,
 				requiredStock = 1,
-				stockToConsume = 1
+				stockToConsume = 1,
+				keywordTokens = new string[] { "KEYWORD_AGILE" }
 			});
 
 			SkillDef lightningUtility = Skills.CreateSkillDef(new SkillDefInfo
@@ -472,10 +472,11 @@ namespace WitchMod.Modules.Survivors
 				resetCooldownTimerOnUse = false,
 				isCombatSkill = true,
 				mustKeyPress = false,
-				cancelSprintingOnActivation = true,
+				cancelSprintingOnActivation = false,
 				rechargeStock = 1,
 				requiredStock = 1,
-				stockToConsume = 1
+				stockToConsume = 1,
+				keywordTokens = new string[] { "KEYWORD_AGILE" }
 			});
 
 			SkillDef lightningSpecial = Skills.CreateSkillDef(new SkillDefInfo

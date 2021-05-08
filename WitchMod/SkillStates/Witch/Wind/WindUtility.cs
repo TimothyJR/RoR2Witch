@@ -37,11 +37,6 @@ namespace WitchMod.SkillStates
 
 			RecalculateDashSpeed();
 
-			if (characterMotor && characterDirection)
-			{
-				characterMotor.velocity = Vector3.zero;
-			}
-
 			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", dashDuration);
 			Util.PlaySound(dodgeSoundString, gameObject);
 		}
@@ -64,8 +59,7 @@ namespace WitchMod.SkillStates
 
 				if (characterMotor && characterDirection)
 				{
-					Vector3 vector = Vector3.up * dashSpeed;
-					characterMotor.velocity = vector;
+					characterMotor.velocity.y = dashSpeed;
 				}
 
 				if (isAuthority && fixedAge >= dashDuration)

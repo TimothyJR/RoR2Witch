@@ -11,7 +11,7 @@ namespace WitchMod.SkillStates
 		// Explosion statics
 		public static float damageCoefficient = 16f;
 		public static float procCoefficient = 1f;
-		public static float baseExplosionDuration = 0.0f;
+		public static float baseExplosionDuration = 0.1f;
 		public static float throwForce = 0f;
 		public static string dodgeSoundString = "HenryRoll";
 		public static float dodgeFOV = EntityStates.Commando.DodgeState.dodgeFOV;

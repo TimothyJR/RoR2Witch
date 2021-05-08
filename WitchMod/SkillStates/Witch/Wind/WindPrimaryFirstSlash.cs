@@ -36,7 +36,7 @@ namespace WitchMod.SkillStates
 			{
 				Util.PlaySound("HenryBombThrow", gameObject);
 				Ray aimRay = GetAimRay();
-				ProjectileManager.instance.FireProjectile(Modules.Projectiles.firePrimaryProjectile,
+				ProjectileManager.instance.FireProjectile(Modules.Projectiles.windPrimaryProjectile,
 					aimRay.origin,
 					Util.QuaternionSafeLookRotation(aimRay.direction),
 					gameObject,
@@ -79,7 +79,5 @@ namespace WitchMod.SkillStates
 		{
 			return new WindPrimarySecondSlash();
 		}
-
-
 	}
 }
