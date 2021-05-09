@@ -16,7 +16,7 @@ namespace WitchMod.SkillStates
 			base.OnEnter();
 			if(isAuthority)
 			{
-				stanceMachine = gameObject.GetComponents<EntityStateMachine>().FirstOrDefault((EntityStateMachine c) => c.customName == "Stance");
+				stanceMachine = gameObject.GetComponents<EntityStateMachine>().FirstOrDefault((EntityStateMachine c) => c.customName == "WitchStance");
 				WitchSwitchSpell switchSpell = ((stanceMachine != null) ? stanceMachine.state : null) as WitchSwitchSpell;
 
 				if(switchSpell != null && switchSpell.GetState() != null)

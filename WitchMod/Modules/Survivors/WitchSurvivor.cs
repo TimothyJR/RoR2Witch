@@ -54,7 +54,7 @@ namespace WitchMod.Modules.Survivors
 					material = henryMat
 				}};
 
-		internal override Type characterMainState { get; set; } = typeof(EntityStates.GenericCharacterMain);
+		internal override Type characterMainState { get; set; } = typeof(SkillStates.WitchStartState);
 
 		// item display stuffs
 		internal override ItemDisplayRuleSet itemDisplayRuleSet { get; set; }

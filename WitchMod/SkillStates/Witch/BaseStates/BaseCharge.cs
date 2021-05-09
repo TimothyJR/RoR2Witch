@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace WitchMod.SkillStates
 {
-	abstract class BaseCharge : BaseSkillState
+	abstract class BaseCharge : BaseWitchSkill
 	{
 		protected float baseDuration = 3.0f;
 		protected float minCharge = 0.1f;

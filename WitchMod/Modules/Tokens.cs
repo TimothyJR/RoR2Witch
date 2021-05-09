@@ -85,6 +85,13 @@ namespace WitchMod.Modules
 			LanguageAPI.Add(prefix + "MASTERYUNLOCKABLE_ACHIEVEMENT_DESC", "As Witch, beat the game or obliterate on Monsoon.");
 			LanguageAPI.Add(prefix + "MASTERYUNLOCKABLE_UNLOCKABLE_NAME", "Witch: Mastery");
 			#endregion
+
+			#region Item
+			LanguageAPI.Add(prefix + "ITEM_NAME", "Witch's Staff");
+			LanguageAPI.Add(prefix + "PICKUP", "Changes the Witch's skills every so often.");
+			LanguageAPI.Add(prefix + "DESC", "Changes the Witch's skills every <style=cIsUtility>120 seconds</style>. For every ability used, this is reduced by <style=cIsUtility>one second</style>.");
+			LanguageAPI.Add(prefix + "LORE", "The Witch's trusty staff.");
+			#endregion
 			#endregion
 		}
 	}

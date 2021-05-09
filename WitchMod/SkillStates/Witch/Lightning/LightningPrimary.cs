@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace WitchMod.SkillStates
 {
-	class LightningPrimary : BaseSkillState
+	class LightningPrimary : BaseWitchSkill
 	{
 		public static float damageCoefficient = 16f;
 		public static float procCoefficient = 1f;

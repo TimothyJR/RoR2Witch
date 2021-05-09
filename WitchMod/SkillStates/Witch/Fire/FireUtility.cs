@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 namespace WitchMod.SkillStates
 {
-	class FireUtility : BaseSkillState
+	class FireUtility : BaseWitchSkill
 	{
 		// Explosion statics
 		public static float damageCoefficient = 16f;

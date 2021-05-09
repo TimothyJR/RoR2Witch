@@ -118,6 +118,7 @@ namespace WitchMod.Modules
 			ProjectileImpactExplosion impactExplosion;
 			windPrimaryProjectile = CreateProjectile("MageFireBombProjectile", "WitchWindProjectile", "GlaiveGhost", false, out impactExplosion, DamageType.Generic);
 
+			impactExplosion.blastRadius = 4f;
 			impactExplosion.lifetime = 0.35f;
 			impactExplosion.destroyOnEnemy = false;
 			impactExplosion.impactEffect = Assets.bombExplosionEffect;

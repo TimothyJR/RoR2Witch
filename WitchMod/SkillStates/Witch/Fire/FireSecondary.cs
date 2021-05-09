@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace WitchMod.SkillStates
 {
-	class FireSecondary : BaseSkillState
+	class FireSecondary : BaseWitchSkill
 	{
 		public static float baseDuration = 1.8f;
 		public static float damageCoefficient = 16f;

@@ -31,7 +31,7 @@ namespace WitchMod.Modules
 			contentPack.skillFamilies.Add(Skills.skillFamilies.ToArray());
 			contentPack.survivorDefs.Add(Prefabs.survivorDefinitions.ToArray());
 			contentPack.unlockableDefs.Add(Unlockables.unlockableDefs.ToArray());
-
+			//contentPack.itemDefs.Add(Items.itemDefs.ToArray());
 			args.ReportProgress(1f);
 			yield break;
 		}

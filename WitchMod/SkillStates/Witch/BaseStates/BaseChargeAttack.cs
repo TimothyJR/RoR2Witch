@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace WitchMod.SkillStates
 {
-	class BaseChargeAttack : BaseSkillState
+	class BaseChargeAttack : BaseWitchSkill
 	{
 		protected float charge;
 		public float Charge { set { charge = value; } }

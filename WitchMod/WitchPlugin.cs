@@ -1,11 +1,10 @@
 ﻿using BepInEx;
 using WitchMod.Modules.Survivors;
+using R2API;
 using R2API.Utils;
 using RoR2;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
@@ -18,13 +17,7 @@ namespace WitchMod
 	[BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
 	[NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
 	[BepInPlugin(MODUID, MODNAME, MODVERSION)]
-	[R2APISubmoduleDependency(new string[]
-	{
-		"PrefabAPI",
-		"LanguageAPI",
-		"SoundAPI",
-	})]
-
+	[R2APISubmoduleDependency(nameof(PrefabAPI), nameof(SoundAPI), nameof(ItemAPI), nameof(ItemDropAPI), nameof(LanguageAPI))]
 	public class WitchPlugin : BaseUnityPlugin
 	{
 		// if you don't change these you're giving permission to deprecate the mod-
@@ -50,6 +43,7 @@ namespace WitchMod
 			Modules.Config.ReadConfig();
 			Modules.States.RegisterStates(); // register states for networking
 			Modules.Buffs.RegisterBuffs(); // add and register custom buffs/debuffs
+			Modules.Items.RegisterItems();
 			Modules.Projectiles.RegisterProjectiles(); // add and register custom projectiles
 			Modules.Tokens.AddTokens(); // register name tokens
 			Modules.ItemDisplays.PopulateDisplays(); // collect item display prefabs for use in our display rules
@@ -76,6 +70,16 @@ namespace WitchMod
 			// run hooks here, disabling one is as simple as commenting out the line
 			//On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
 			//On.RoR2.EquipmentSlot.Execute += ChangeCharacterSkills;
+
+			//On.RoR2.CharacterBody.OnInventoryChanged += (orig, self) =>
+			//{
+			//	orig(self);
+			//	self.inventory.
+			//	if(self.inventory.GetItemCount(Modules.Items.witchItem) > 0)
+			//	{
+			//		
+			//	}
+			//};
 		}
 
 		private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
@@ -95,16 +99,21 @@ namespace WitchMod
 		private void ChangeCharacterSkills(On.RoR2.EquipmentSlot.orig_Execute orig, EquipmentSlot self)
 		{
 			orig(self);
-			EntityStateMachine stateMachine = self.characterBody.gameObject.GetComponents<EntityStateMachine>().FirstOrDefault((EntityStateMachine c) => c.customName != "Stance");
-			stateMachine.SetNextState(EntityStateCatalog.InstantiateState(typeof(WitchMod.SkillStates.WitchSwap)));
+			EntityStateMachine stateMachine = self.characterBody.gameObject.GetComponents<EntityStateMachine>().FirstOrDefault((EntityStateMachine c) => c.customName != "WitchStance");
+			stateMachine.SetNextState(EntityStateCatalog.InstantiateState(typeof(SkillStates.WitchSwap)));
 		}
 
 		public void Update()
 		{
 			if(Input.GetKeyDown(KeyCode.F1))
 			{
-				EntityStateMachine stateMachine = PlayerCharacterMasterController.instances[0].master.GetBodyObject().gameObject.GetComponents<EntityStateMachine>().FirstOrDefault((EntityStateMachine c) => c.customName != "Stance");
-				stateMachine.SetNextState(EntityStateCatalog.InstantiateState(typeof(WitchMod.SkillStates.WitchSwap)));
+				EntityStateMachine stateMachine = PlayerCharacterMasterController.instances[0].master.GetBodyObject().gameObject.GetComponents<EntityStateMachine>().FirstOrDefault((EntityStateMachine c) => c.customName != "WitchStance");
+				stateMachine.SetNextState(EntityStateCatalog.InstantiateState(typeof(SkillStates.WitchSwap)));
+			}
+			if(Input.GetKeyDown(KeyCode.F2))
+			{
+				Transform trans = PlayerCharacterMasterController.instances[0].master.GetBodyObject().transform;
+				PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex("TIM_WITCH_STAFF"), transform.position, transform.forward * 20.0f);
 			}
 		}
 	}

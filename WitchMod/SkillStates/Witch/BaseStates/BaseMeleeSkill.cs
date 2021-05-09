@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 namespace WitchMod.SkillStates
 {
-	abstract class BaseMeleeSkill : BaseSkillState
+	abstract class BaseMeleeSkill : BaseWitchSkill
 	{
 		protected bool cancelled = false;
 		protected bool inHitPause;
