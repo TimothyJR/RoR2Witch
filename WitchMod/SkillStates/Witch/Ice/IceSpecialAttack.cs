@@ -82,7 +82,7 @@ namespace WitchMod.SkillStates
 								DamageColorIndex.Default,
 								null,
 								0.0f);
-							spawnPoint = Quaternion.AngleAxis(360 / middleSpawnCount - 1, Vector3.up) * (spawnPoint - aimRay.origin) + aimRay.origin;
+							spawnPoint = Quaternion.AngleAxis(360 / (middleSpawnCount - 1), Vector3.up) * (spawnPoint - aimRay.origin) + aimRay.origin;
 						}
 
 						if (charge > 0.66f)
@@ -100,7 +100,7 @@ namespace WitchMod.SkillStates
 									DamageColorIndex.Default,
 									null,
 									0.0f);
-								spawnPoint = Quaternion.AngleAxis(360 / outerSpawnCount - 1, Vector3.up) * (spawnPoint - aimRay.origin) + aimRay.origin;
+								spawnPoint = Quaternion.AngleAxis(360 / (outerSpawnCount - 1), Vector3.up) * (spawnPoint - aimRay.origin) + aimRay.origin;
 							}
 						}
 					}

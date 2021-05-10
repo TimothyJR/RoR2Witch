@@ -16,12 +16,15 @@ namespace WitchMod.SkillStates
 		private float fireTime;
 		private bool hasFired;
 		private int projectileCount = 10;
-		private float distanceToSpawn = 10.0f;
+		private float coneSize = 140.0f;
+		private float secondaryConeSize = 160.0f;
+		private float coneDistance = 5.0f;
+		private float secondaryConeDistance = 7.0f;
 
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			duration = FirePrimary.baseDuration / attackSpeedStat;
+			duration = baseDuration / attackSpeedStat;
 			fireTime = 0.35f * duration;
 			characterBody.SetAimTimer(2f);
 
@@ -43,30 +46,43 @@ namespace WitchMod.SkillStates
 				if (isAuthority)
 				{
 					Ray aimRay = GetAimRay();
-					Vector3 direction = -Vector3.up * distanceToSpawn;
-					Vector3 origin = aimRay.origin - direction;
+					Vector3 behind = -aimRay.direction.normalized;
 					Vector3 aimRayNoY = aimRay.direction.normalized;
 					aimRayNoY.y = 0.0f;
-					Vector3 right = Vector3.Cross(aimRayNoY, Vector3.up);
+					Vector3 right = Vector3.Cross(aimRayNoY, Vector3.up).normalized;
 
-					for (int i = 0; i < projectileCount; i++)
+					for (int i = 0; i < projectileCount / 2; i++)
 					{
-						ProjectileManager.instance.FireProjectile(Modules.Projectiles.firePrimaryProjectile,
-							origin + right * Random.Range(-15f, 15f) + Vector3.up * Random.Range(0.0f, 30.0f),
-							Util.QuaternionSafeLookRotation(direction + aimRayNoY * 2.5f),
-							gameObject,
-							FirePrimary.damageCoefficient * damageStat,
-							4000f,
-							RollCrit(),
-							DamageColorIndex.Default,
-							null,
-							FireSpecial.throwForce);
+						SpawnProjectile(aimRay, right * coneDistance, behind, coneSize, projectileCount / 2, i);
+					}
 
-						float randomIncrement = Random.Range(2.0f, 10.0f);
-						origin += aimRayNoY * randomIncrement;
+					for (int i = projectileCount / 2; i < projectileCount; i++)
+					{
+						Debug.Log(projectileCount - i);
+						SpawnProjectile(aimRay, right * secondaryConeDistance, behind, secondaryConeSize, projectileCount - (projectileCount / 2), (i - projectileCount / 2));
 					}
 				}
 			}
+		}
+
+		private void SpawnProjectile(Ray aimRay, Vector3 right, Vector3 behind, float cone, float projectileCountOnArc, float projectileIndex)
+		{
+			Vector3 origin;
+			origin = aimRay.origin + right;
+
+			float startAngle = (180.0f - cone) / 2;
+			origin = Quaternion.AngleAxis(startAngle + (cone / (projectileCountOnArc - 1)) * projectileIndex, -aimRay.direction) * (origin - aimRay.origin) + aimRay.origin;
+			origin += behind;
+			ProjectileManager.instance.FireProjectile(Modules.Projectiles.firePrimaryProjectile,
+				origin,
+				Util.QuaternionSafeLookRotation(aimRay.direction),
+				gameObject,
+				damageCoefficient * damageStat,
+				4000f,
+				RollCrit(),
+				DamageColorIndex.Default,
+				null,
+				throwForce);
 		}
 
 		public override void FixedUpdate()
