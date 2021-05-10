@@ -21,6 +21,7 @@ namespace WitchMod.Modules
 			entityStates.Add(typeof(IcePrimaryAttack));
 			entityStates.Add(typeof(IceSecondaryCharge));
 			entityStates.Add(typeof(IceSecondaryAttack));
+			entityStates.Add(typeof(IceSecondaryMelee));
 			entityStates.Add(typeof(IceUtilityCharge));
 			entityStates.Add(typeof(IceUtilityAttack));
 			entityStates.Add(typeof(IceSpecialCharge));

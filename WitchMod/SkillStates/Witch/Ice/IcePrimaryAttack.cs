@@ -49,7 +49,7 @@ namespace WitchMod.SkillStates
 				hasFired = true;
 				Util.PlaySound("HenryBombThrow", gameObject);
 
-				if (base.isAuthority)
+				if (isAuthority)
 				{
 					Ray aimRay = GetAimRay();
 					Quaternion direction = Util.QuaternionSafeLookRotation(aimRay.direction);
@@ -89,7 +89,7 @@ namespace WitchMod.SkillStates
 				direction,
 				gameObject,
 				damageStat * damageMultiplier,
-				0.0f,
+				4000f,
 				RollCrit(),
 				DamageColorIndex.Default,
 				null,
