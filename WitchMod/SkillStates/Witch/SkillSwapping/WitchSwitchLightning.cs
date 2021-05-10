@@ -7,7 +7,14 @@ namespace WitchMod.SkillStates
 		public override void OnEnter()
 		{
 			base.OnEnter();
+			GetComponent<WitchTracker>().enabled = true;
 			swapState = typeof(WitchSwitchFire);
+		}
+
+		public override void OnExit()
+		{
+			GetComponent<WitchTracker>().enabled = false;
+			base.OnExit();
 		}
 
 		protected override GenericSkill[] GetCurrentPrimarySkill()

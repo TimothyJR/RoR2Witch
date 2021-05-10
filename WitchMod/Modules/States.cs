@@ -36,7 +36,8 @@ namespace WitchMod.Modules
 			// Lightning States
 			entityStates.Add(typeof(LightningPrimary));
 			entityStates.Add(typeof(LightningSecondary));
-			entityStates.Add(typeof(LightningUtility));
+			entityStates.Add(typeof(LightningUtilityBegin));
+			entityStates.Add(typeof(LightningUtilityAim));
 			entityStates.Add(typeof(LightningSpecial));
 
 			// Swap States

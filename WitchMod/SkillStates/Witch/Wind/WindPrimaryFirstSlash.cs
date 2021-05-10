@@ -41,7 +41,7 @@ namespace WitchMod.SkillStates
 					Util.QuaternionSafeLookRotation(aimRay.direction),
 					gameObject,
 					damageCoefficient * damageStat,
-					4000f,
+					0.0f,
 					RollCrit(),
 					DamageColorIndex.Default,
 					null,

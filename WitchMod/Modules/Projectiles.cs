@@ -15,6 +15,7 @@ namespace WitchMod.Modules
 		internal static GameObject iceUtilityProjectile;
 		internal static GameObject iceSpecialProjectile;
 		internal static GameObject windPrimaryProjectile;
+		internal static GameObject windSpecialProjectile;
 
 		internal static void RegisterProjectiles()
 		{
@@ -26,6 +27,7 @@ namespace WitchMod.Modules
 			CreateIceUtility();
 			CreateIceSpecial();
 			CreateWindPrimary();
+			CreateWindSpecial();
 			AddProjectile(firePrimaryProjectile);
 			AddProjectile(fireUtilityExplosion);
 			AddProjectile(fireSpecialMeteor);
@@ -33,6 +35,7 @@ namespace WitchMod.Modules
 			AddProjectile(iceUtilityProjectile);
 			AddProjectile(iceSpecialProjectile);
 			AddProjectile(windPrimaryProjectile);
+			AddProjectile(windSpecialProjectile);
 
 		}
 
@@ -126,6 +129,19 @@ namespace WitchMod.Modules
 			impactExplosion.lifetimeAfterImpact = 0.1f;
 		}
 
+		private static void CreateWindSpecial()
+		{
+			ProjectileImpactExplosion impactExplosion;
+			windSpecialProjectile = CreateProjectile("HuntressArrowRain", "WitchWindProjectile", "", false, out impactExplosion, DamageType.Generic, false);
+
+			//impactExplosion.blastRadius = 4f;
+			//impactExplosion.lifetime = 0.35f;
+			//impactExplosion.destroyOnEnemy = false;
+			//impactExplosion.impactEffect = Assets.bombExplosionEffect;
+			//impactExplosion.timerAfterImpact = true;
+			//impactExplosion.lifetimeAfterImpact = 0.1f;
+		}
+
 		private static GameObject CreateProjectile(string cloneName, string newName, string ghostAssetName, bool loadGhostFromAssetBundle, out ProjectileImpactExplosion impact, DamageType type = DamageType.Generic, bool hasImpact = true)
 		{
 			GameObject projectile = CloneProjectilePrefab(cloneName, newName);
@@ -142,17 +158,22 @@ namespace WitchMod.Modules
 			}
 
 			ProjectileController controller = projectile.GetComponent<ProjectileController>();
-			if(loadGhostFromAssetBundle)
+
+			if(!(ghostAssetName == ""))
 			{
-				if (Assets.mainAssetBundle.LoadAsset<GameObject>(ghostAssetName) != null)
+				if (loadGhostFromAssetBundle)
 				{
-					controller.ghostPrefab = CreateGhostPrefab(ghostAssetName);
+					if (Assets.mainAssetBundle.LoadAsset<GameObject>(ghostAssetName) != null)
+					{
+						controller.ghostPrefab = CreateGhostPrefab(ghostAssetName);
+					}
+				}
+				else
+				{
+					controller.ghostPrefab = Resources.Load($"Prefabs/ProjectileGhosts/{ghostAssetName}") as GameObject;
 				}
 			}
-			else
-			{
-				controller.ghostPrefab = Resources.Load($"Prefabs/ProjectileGhosts/{ghostAssetName}") as GameObject;
-			}
+
 
 			controller.startSound = "";
 

@@ -1,6 +1,8 @@
 ﻿using EntityStates;
 using RoR2;
-using RoR2.Projectile;
+using RoR2.Orbs;
+using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace WitchMod.SkillStates
@@ -15,51 +17,65 @@ namespace WitchMod.SkillStates
 		private float duration;
 		private float fireTime;
 		private bool hasFired;
-		private int projectileCount = 5;
-		private float coneSize = 60.0f;
+
+		private WitchTracker tracker;
 
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			this.duration = LightningPrimary.baseDuration / this.attackSpeedStat;
-			this.fireTime = 0.35f * this.duration;
-			base.characterBody.SetAimTimer(2f);
-
-			base.PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.duration);
+			duration = baseDuration / attackSpeedStat;
+			fireTime = 0.35f * duration;
+			characterBody.SetAimTimer(2f);
+			tracker = GetComponent<WitchTracker>();
+			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", duration);
 		}
 
 		private void Fire()
 		{
-			if (!this.hasFired)
+			if (!hasFired)
 			{
-				this.hasFired = true;
+				hasFired = true;
 				Util.PlaySound("HenryBombThrow", base.gameObject);
 
-				if (base.isAuthority)
+				if (isAuthority)
 				{
-					Ray aimRay = base.GetAimRay();
-
-					Vector3 up = Vector3.Cross(aimRay.direction, Quaternion.Euler(0.0f, characterDirection.yaw, 0.0f) * Vector3.right);
-					float increment = coneSize / (projectileCount - 1);
-					float start = -coneSize / 2;
-
-					for(int i = 0; i < projectileCount; i++)
+					if(tracker != null)
 					{
-						Quaternion lerp = Util.QuaternionSafeLookRotation(aimRay.direction) * Quaternion.AngleAxis(start + (i * increment), up);
+						if (tracker.GetTrackingTarget() != null)
+						{
+							FireOrb(tracker.GetTrackingTarget());
+						}
+					}
+					else
+					{
+						Ray aimRay = GetAimRay();
+						BullseyeSearch bullseyeSearch = new BullseyeSearch();
+						bullseyeSearch.searchOrigin = aimRay.origin;
+						bullseyeSearch.searchDirection = aimRay.direction;
+						bullseyeSearch.maxDistanceFilter = 50.0f;
+						bullseyeSearch.teamMaskFilter = TeamMask.GetUnprotectedTeams(teamComponent.teamIndex);
+						bullseyeSearch.sortMode = BullseyeSearch.SortMode.Distance;
+						bullseyeSearch.RefreshCandidates();
+						HurtBox hurtBox = bullseyeSearch.GetResults().FirstOrDefault();
 
-						ProjectileManager.instance.FireProjectile(Modules.Projectiles.firePrimaryProjectile,
-							aimRay.origin,
-							lerp,
-							base.gameObject,
-							LightningPrimary.damageCoefficient * this.damageStat,
-							4000f,
-							base.RollCrit(),
-							DamageColorIndex.Default,
-							null,
-							LightningPrimary.throwForce);
+						FireOrb(hurtBox);
 					}
 				}
 			}
+		}
+
+		private void FireOrb(HurtBox target)
+		{
+			OrbManager.instance.AddOrb(new LightningStrikeOrb
+			{
+				attacker = gameObject,
+				damageColorIndex = DamageColorIndex.Default,
+				damageValue = characterBody.damage * damageCoefficient,
+				isCrit = RollCrit(),
+				procChainMask = default,
+				procCoefficient = procCoefficient,
+				target = target
+			});
 		}
 
 		public override void FixedUpdate()

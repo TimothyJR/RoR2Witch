@@ -7,57 +7,43 @@ namespace WitchMod.SkillStates
 {
 	class WindSpecial : BaseWitchSkill
 	{
-		public static float damageCoefficient = 16f;
+		public static float damageCoefficient = 2f;
 		public static float procCoefficient = 1f;
 		public static float baseDuration = 0.65f;
-		public static float throwForce = 80f;
 
 		private float duration;
 		private float fireTime;
 		private bool hasFired;
-		private int projectileCount = 5;
-		private float coneSize = 60.0f;
 
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			this.duration = WindSpecial.baseDuration / this.attackSpeedStat;
-			this.fireTime = 0.35f * this.duration;
-			base.characterBody.SetAimTimer(2f);
+			duration = baseDuration / attackSpeedStat;
+			fireTime = 0.35f * duration;
+			characterBody.SetAimTimer(2f);
 
-			base.PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.duration);
+			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", duration);
 		}
 
 		private void Fire()
 		{
-			if (!this.hasFired)
+			if (!hasFired)
 			{
-				this.hasFired = true;
-				Util.PlaySound("HenryBombThrow", base.gameObject);
+				hasFired = true;
+				Util.PlaySound("HenryBombThrow", gameObject);
 
-				if (base.isAuthority)
+				if (isAuthority)
 				{
-					Ray aimRay = base.GetAimRay();
-
-					Vector3 up = Vector3.Cross(aimRay.direction, Quaternion.Euler(0.0f, characterDirection.yaw, 0.0f) * Vector3.right);
-					float increment = coneSize / (projectileCount - 1);
-					float start = -coneSize / 2;
-
-					for(int i = 0; i < projectileCount; i++)
-					{
-						Quaternion lerp = Util.QuaternionSafeLookRotation(aimRay.direction) * Quaternion.AngleAxis(start + (i * increment), up);
-
-						ProjectileManager.instance.FireProjectile(Modules.Projectiles.firePrimaryProjectile,
-							aimRay.origin,
-							lerp,
-							base.gameObject,
-							WindSpecial.damageCoefficient * this.damageStat,
-							4000f,
-							base.RollCrit(),
-							DamageColorIndex.Default,
-							null,
-							WindSpecial.throwForce);
-					}
+					ProjectileManager.instance.FireProjectile(Modules.Projectiles.windSpecialProjectile,
+						gameObject.transform.position,
+						gameObject.transform.rotation,
+						gameObject,
+						damageCoefficient * damageStat,
+						0.0f,
+						RollCrit(),
+						DamageColorIndex.Default,
+						null,
+						0.0f);
 				}
 			}
 		}
@@ -66,14 +52,14 @@ namespace WitchMod.SkillStates
 		{
 			base.FixedUpdate();
 
-			if (base.fixedAge >= this.fireTime)
+			if (fixedAge >= fireTime)
 			{
-				this.Fire();
+				Fire();
 			}
 
-			if (base.fixedAge >= this.duration && base.isAuthority)
+			if (fixedAge >= duration && isAuthority)
 			{
-				this.outer.SetNextStateToMain();
+				outer.SetNextStateToMain();
 				return;
 			}
 		}

@@ -16,6 +16,10 @@ namespace WitchMod.SkillStates
 			{
 				gameObject.AddComponent<WitchItemBehavior>();
 			}
+			if(!gameObject.GetComponent<WitchTracker>())
+			{
+				gameObject.AddComponent<WitchTracker>().enabled = false ;
+			}
 			outer.SetNextStateToMain();
 		}
 	}

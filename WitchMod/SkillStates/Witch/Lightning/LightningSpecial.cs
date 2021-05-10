@@ -7,74 +7,96 @@ namespace WitchMod.SkillStates
 {
 	class LightningSpecial : BaseWitchSkill
 	{
+		public static float baseDuration = 1.8f;
 		public static float damageCoefficient = 16f;
+		public static float blastRadius = 0.5f;
 		public static float procCoefficient = 1f;
-		public static float baseDuration = 0.65f;
-		public static float throwForce = 80f;
+		public static float range = 256f;
 
 		private float duration;
 		private float fireTime;
-		private bool hasFired;
-		private int projectileCount = 5;
-		private float coneSize = 60.0f;
-
+		private bool hasFired = false;
+		//private Transform fireBeam;
+		private GameObject lightningBeamPrefab = Resources.Load<GameObject>("Prefabs/Effects/Tracers/TracerToolbotRebar");
+		private GameObject impactPrefab = Resources.Load<GameObject>("Prefabs/Effects/FusionCellExplosion");
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			this.duration = LightningSpecial.baseDuration / this.attackSpeedStat;
-			this.fireTime = 0.35f * this.duration;
-			base.characterBody.SetAimTimer(2f);
 
-			base.PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", this.duration);
+			duration = baseDuration / attackSpeedStat;
+			fireTime = 0.2f * duration;
+			characterBody.SetAimTimer(2f);
+
+			PlayAnimation("LeftArm, Override", "ShootGun", "ShootGun.playbackRate", duration);
 		}
 
-		private void Fire()
+		public override void OnExit()
 		{
-			if (!this.hasFired)
-			{
-				this.hasFired = true;
-				Util.PlaySound("HenryBombThrow", base.gameObject);
+			// CLEAN UP VFX
+			//if(this.fireBeam)
+			//{
+			//	EntityState.Destroy(this.fireBeam.gameObject);
+			//}
 
-				if (base.isAuthority)
-				{
-					Ray aimRay = base.GetAimRay();
-
-					Vector3 up = Vector3.Cross(aimRay.direction, Quaternion.Euler(0.0f, characterDirection.yaw, 0.0f) * Vector3.right);
-					float increment = coneSize / (projectileCount - 1);
-					float start = -coneSize / 2;
-
-					for(int i = 0; i < projectileCount; i++)
-					{
-						Quaternion lerp = Util.QuaternionSafeLookRotation(aimRay.direction) * Quaternion.AngleAxis(start + (i * increment), up);
-
-						ProjectileManager.instance.FireProjectile(Modules.Projectiles.firePrimaryProjectile,
-							aimRay.origin,
-							lerp,
-							base.gameObject,
-							LightningSpecial.damageCoefficient * this.damageStat,
-							4000f,
-							base.RollCrit(),
-							DamageColorIndex.Default,
-							null,
-							LightningSpecial.throwForce);
-					}
-				}
-			}
+			base.OnExit();
 		}
 
 		public override void FixedUpdate()
 		{
 			base.FixedUpdate();
 
-			if (base.fixedAge >= this.fireTime)
+			if (fixedAge >= fireTime && !hasFired)
 			{
-				this.Fire();
+				// FOR SPAWNING VFX
+				//Transform spawnPoint = this.GetModelChildLocator().FindChild("MuzzleLeft");
+				//if(spawnPoint)
+				//{
+				//	this.fireBeam = UnityEngine.Object.Instantiate<GameObject>(this.fireBeamPrefab, transform).transform;
+				//}
+				//if(this.fireBeam)
+				//{
+				//	this.fireBeam.GetComponent<ScaleParticleSystemDuration>().newDuration = this.duration;
+				//}
+				hasFired = true;
+				Fire();
+
 			}
 
-			if (base.fixedAge >= this.duration && base.isAuthority)
+			if (fixedAge >= duration && isAuthority)
 			{
-				this.outer.SetNextStateToMain();
+				outer.SetNextStateToMain();
 				return;
+			}
+		}
+
+		private void Fire()
+		{
+			Ray aimRay = GetAimRay();
+
+			if (isAuthority)
+			{
+				new BulletAttack
+				{
+					owner = gameObject,
+					weapon = gameObject,
+					origin = aimRay.origin,
+					aimVector = aimRay.direction,
+					minSpread = 0.0f,
+					maxSpread = 0f,
+					damage = damageCoefficient * damageStat,
+					force = 100.0f,
+					muzzleName = "Muzzle",
+					hitEffectPrefab = impactPrefab,
+					isCrit = RollCrit(),
+					radius = blastRadius,
+					falloffModel = BulletAttack.FalloffModel.None,
+					stopperMask = LayerIndex.world.mask,
+					procCoefficient = procCoefficient,
+					maxDistance = range,
+					smartCollision = true,
+					damageType = DamageType.Shock5s,
+					tracerEffectPrefab = lightningBeamPrefab
+				}.Fire();
 			}
 		}
 
