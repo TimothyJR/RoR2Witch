@@ -7,7 +7,7 @@ namespace WitchMod.SkillStates
 {
 	abstract class BaseCharge : BaseWitchSkill
 	{
-		protected float baseDuration = 3.0f;
+		public static float baseDuration = 2.0f;
 		protected float minCharge = 0.1f;
 		protected float duration;
 

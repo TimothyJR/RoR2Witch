@@ -11,6 +11,7 @@ namespace WitchMod.SkillStates
 	{
 		protected bool cancelled = false;
 		protected bool inHitPause;
+
 		protected float baseDuration = 1f;
 		protected float baseEarlyExitTime = 0.4f;
 		protected float damageCoefficient = 3.5f;
@@ -22,23 +23,31 @@ namespace WitchMod.SkillStates
 		protected float stopwatch;
 		protected float attackStartTime = 0.2f;
 		protected float attackEndTime = 0.4f;
+
 		protected string swingSoundString = "";
 		protected string hitSoundString = "";
+
 		protected Vector3 bonusForce = Vector3.zero;
+
 		protected GameObject swingEffectPrefab;
 		protected GameObject hitEffectPrefab;
+
 		protected DamageType damage = DamageType.Generic;
 		protected NetworkSoundEventIndex impactSound;
 
 		private bool hasFired;
 		private bool hasHopped;
+
 		private int swingIndex;
+
 		private float duration;
 		private float earlyExitTime;
 		private float hitPauseTimer;
+
 		private Vector3 storedVelocity;
-		private OverlapAttack attack;
 		private HitStopCachedState hitStopCachedState;
+
+		private OverlapAttack attack;
 		protected Animator animator;
 
 		protected bool HasFired { get { return hasFired; } }

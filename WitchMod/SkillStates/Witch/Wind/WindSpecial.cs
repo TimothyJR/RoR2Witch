@@ -1,19 +1,18 @@
 ﻿using EntityStates;
 using RoR2;
 using RoR2.Projectile;
-using UnityEngine;
 
 namespace WitchMod.SkillStates
 {
 	class WindSpecial : BaseWitchSkill
 	{
-		public static float damageCoefficient = 2f;
-		public static float procCoefficient = 1f;
-		public static float baseDuration = 0.65f;
+		public static float damageCoefficient = 2.8f;
 
+		private bool hasFired;
+		private float baseDuration = 0.65f;
 		private float duration;
 		private float fireTime;
-		private bool hasFired;
+
 
 		public override void OnEnter()
 		{

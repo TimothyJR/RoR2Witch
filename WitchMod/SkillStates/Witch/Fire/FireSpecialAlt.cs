@@ -7,15 +7,14 @@ namespace WitchMod.SkillStates
 {
 	class FireSpecialAlt : BaseWitchSkill
 	{
-		public static float damageCoefficient = 16f;
-		public static float procCoefficient = 1f;
-		public static float baseDuration = 0.65f;
-		public static float throwForce = 15.0f;
+		public static int projectileCount = 10;
+		public static float damageCoefficient = 2.8f;
 
+		private bool hasFired;
+		private float baseDuration = 0.65f;
+		private float throwForce = 15.0f;
 		private float duration;
 		private float fireTime;
-		private bool hasFired;
-		private int projectileCount = 10;
 		private float distanceToSpawn = 10.0f;
 
 		public override void OnEnter()
@@ -51,12 +50,12 @@ namespace WitchMod.SkillStates
 
 					for (int i = 0; i < projectileCount; i++)
 					{
-						ProjectileManager.instance.FireProjectile(Modules.Projectiles.firePrimaryProjectile,
+						ProjectileManager.instance.FireProjectile(Modules.Projectiles.fireSpecialMeteor,
 							origin + right * Random.Range(-15f, 15f) + Vector3.up * Random.Range(0.0f, 30.0f),
 							Util.QuaternionSafeLookRotation(direction + aimRayNoY * 2.5f),
 							gameObject,
 							damageCoefficient * damageStat,
-							4000f,
+							200.0f,
 							RollCrit(),
 							DamageColorIndex.Default,
 							null,

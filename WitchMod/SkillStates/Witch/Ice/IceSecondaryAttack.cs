@@ -1,5 +1,4 @@
-﻿using EntityStates;
-using RoR2;
+﻿using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
 
@@ -7,15 +6,14 @@ namespace WitchMod.SkillStates
 {
 	class IceSecondaryAttack : BaseChargeAttack
 	{
-		public static float maxDamageCoefficient = 2f;
-		public static float minDamageCoefficient = 6f;
-		public static float procCoefficient = 1f;
-		public static float baseDuration = 0.65f;
-		public static float throwForce = 80f;
+		public static float minDamageCoefficient = 2.0f;
+		public static float maxDamageCoefficient = 6.0f;
 
+		private bool hasFired;
+		private float baseDuration = 0.65f;
+		private float throwForce = 120f;
 		private float duration;
 		private float fireTime;
-		private bool hasFired;
 
 		public override void OnEnter()
 		{
@@ -31,12 +29,12 @@ namespace WitchMod.SkillStates
 		{
 			base.FixedUpdate();
 
-			if (fixedAge >= this.fireTime)
+			if (fixedAge >= fireTime)
 			{
 				Fire();
 			}
 
-			if (fixedAge >= this.duration && base.isAuthority)
+			if (fixedAge >= duration && isAuthority)
 			{
 				outer.SetNextStateToMain();
 				return;
@@ -53,51 +51,48 @@ namespace WitchMod.SkillStates
 				if (base.isAuthority)
 				{
 					Ray aimRay = GetAimRay();
-
-					ProjectileManager.instance.FireProjectile(Modules.Projectiles.icePrimaryProjectile,
+					Quaternion direction = Util.QuaternionSafeLookRotation(aimRay.direction);
+					SpawnProjectile(
 						aimRay.origin,
-						Util.QuaternionSafeLookRotation(aimRay.direction),
-						gameObject,
-						damageStat * Util.Remap(Mathf.Min(charge, 0.33f), 0.0f, 0.33f, minDamageCoefficient, maxDamageCoefficient),
-						4000f,
-						RollCrit(),
-						DamageColorIndex.Default,
-						null,
-						throwForce);
+						direction,
+						GetDamageMultiplier(0.0f, 0.33f, minDamageCoefficient, maxDamageCoefficient, 1.0f)
+						);
 
 					if (charge > 0.33f)
 					{
 						Vector3 right = Quaternion.Euler(0.0f, characterDirection.yaw, 0.0f) * Vector3.right;
 
-						ProjectileManager.instance.FireProjectile(Modules.Projectiles.icePrimaryProjectile,
-							aimRay.origin + Vector3.up * 0.5f + right * 0.5f,
-							Util.QuaternionSafeLookRotation(aimRay.direction),
-							gameObject,
-							damageStat * Util.Remap(Mathf.Min(charge, 0.66f), 0.33f, 0.66f, minDamageCoefficient, maxDamageCoefficient),
-							4000f,
-							RollCrit(),
-							DamageColorIndex.Default,
-							null,
-							throwForce);
+						SpawnProjectile(
+							aimRay.origin + Vector3.up * 0.7f + right * 0.7f,
+							direction,
+							GetDamageMultiplier(0.33f, 0.66f, minDamageCoefficient, maxDamageCoefficient, Modules.StaticValues.iceSecondAttackDamageMultiplier)
+							);
 
 						if (charge > 0.66f)
 						{
-							ProjectileManager.instance.FireProjectile(Modules.Projectiles.icePrimaryProjectile,
-								aimRay.origin + Vector3.up * 0.5f - right * 0.5f,
-								Util.QuaternionSafeLookRotation(aimRay.direction),
-								gameObject,
-								damageStat * Util.Remap(charge, 0.0f, 1.0f, minDamageCoefficient, maxDamageCoefficient),
-								4000f,
-								RollCrit(),
-								DamageColorIndex.Default,
-								null,
-								throwForce);
+							SpawnProjectile(
+								aimRay.origin + Vector3.up * 0.7f - right * 0.7f,
+								direction,
+								GetDamageMultiplier(0.66f, 1.0f, minDamageCoefficient, maxDamageCoefficient, Modules.StaticValues.iceThirdAttackDamageMultiplier)
+								);
 						}
 					}
-
 				}
 			}
 		}
 
+		private void SpawnProjectile(Vector3 origin, Quaternion direction, float damageMultiplier)
+		{
+			ProjectileManager.instance.FireProjectile(Modules.Projectiles.icePrimaryProjectile,
+				origin,
+				direction,
+				gameObject,
+				damageStat * damageMultiplier,
+				4000f,
+				RollCrit(),
+				DamageColorIndex.Default,
+				null,
+				throwForce);
+		}
 	}
 }

@@ -1,24 +1,25 @@
 ﻿using EntityStates;
 using RoR2;
-using RoR2.Projectile;
 using UnityEngine;
 
 namespace WitchMod.SkillStates
 {
 	class LightningSpecial : BaseWitchSkill
 	{
-		public static float baseDuration = 1.8f;
-		public static float damageCoefficient = 16f;
-		public static float blastRadius = 0.5f;
-		public static float procCoefficient = 1f;
-		public static float range = 256f;
+		public static float damageCoefficient = 2.8f;
 
+		private bool hasFired = false;
+		private float baseDuration = 1.8f;
+		private float blastRadius = 0.5f;
+		private float procCoefficient = 1f;
+		private float range = 256f;
 		private float duration;
 		private float fireTime;
-		private bool hasFired = false;
+
 		//private Transform fireBeam;
 		private GameObject lightningBeamPrefab = Resources.Load<GameObject>("Prefabs/Effects/Tracers/TracerToolbotRebar");
 		private GameObject impactPrefab = Resources.Load<GameObject>("Prefabs/Effects/FusionCellExplosion");
+
 		public override void OnEnter()
 		{
 			base.OnEnter();

@@ -430,6 +430,30 @@ namespace WitchMod.Modules.Survivors
 				stockToConsume = 1
 			});
 
+			SkillDef fireMeteorAltSkillDef = Skills.CreateSkillDef(new SkillDefInfo
+			{
+				skillName = prefix + "_WITCH_BODY_SPECIAL_FIRE_NAME_ALT",
+				skillNameToken = prefix + "_WITCH_BODY_SPECIAL_FIRE_NAME_ALT",
+				skillDescriptionToken = prefix + "_WITCH_BODY_SPECIAL_FIRE_DESCRIPTION_ALT",
+				skillIcon = Assets.mainAssetBundle.LoadAsset<Sprite>("texPrimaryIcon"),
+				activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.FireSpecialAlt)),
+				activationStateMachineName = "Slide",
+				baseMaxStock = 1,
+				baseRechargeInterval = 2f,
+				beginSkillCooldownOnSkillEnd = false,
+				canceledFromSprinting = false,
+				forceSprintDuringState = false,
+				fullRestockOnAssign = true,
+				interruptPriority = EntityStates.InterruptPriority.Skill,
+				resetCooldownTimerOnUse = false,
+				isCombatSkill = true,
+				mustKeyPress = false,
+				cancelSprintingOnActivation = true,
+				rechargeStock = 1,
+				requiredStock = 1,
+				stockToConsume = 1
+			});
+
 			SkillDef iceExplosion = Skills.CreateSkillDef(new SkillDefInfo
 			{
 				skillName = prefix + "_WITCH_BODY_SPECIAL_ICE_NAME",
@@ -503,7 +527,7 @@ namespace WitchMod.Modules.Survivors
 				stockToConsume = 1
 			});
 
-			Skills.CreateFamily(bodyPrefab, "WitchFire", new SkillDef[] { fireMeteorSkillDef }, true, 3);
+			Skills.CreateFamily(bodyPrefab, "WitchFire", new SkillDef[] { fireMeteorSkillDef, fireMeteorAltSkillDef }, true, 3);
 			Skills.CreateFamily(bodyPrefab, "WitchIce", new SkillDef[] { iceExplosion }, false, 3);
 			Skills.CreateFamily(bodyPrefab, "WitchWind", new SkillDef[] { windSpecial }, false, 3);
 			Skills.CreateFamily(bodyPrefab, "WitchLightning", new SkillDef[] { lightningSpecial }, false, 3);

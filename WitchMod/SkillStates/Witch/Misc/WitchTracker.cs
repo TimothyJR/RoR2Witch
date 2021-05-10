@@ -13,10 +13,11 @@ namespace WitchMod.SkillStates
 		private float maxTrackingDistance = 40.0f;
 		private float maxTrackingAngle = 20.0f;
 		private float trackerUpdateFrequency = 10.0f;
+		private float timeSinceUpdate;
+
 		private HurtBox trackingTarget;
 		private TeamComponent teamComponent;
 		private InputBankTest inputBank;
-		private float timeSinceUpdate;
 		private Indicator indicator;
 		private readonly BullseyeSearch search = new BullseyeSearch();
 

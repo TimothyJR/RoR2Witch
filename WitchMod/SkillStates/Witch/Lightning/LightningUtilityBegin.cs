@@ -8,16 +8,20 @@ namespace WitchMod.SkillStates
 {
 	class LightningUtilityBegin : BaseWitchSkill
 	{
-		private Transform modelTransform;
-		private CharacterModel model;
-		private HurtBoxGroup hurtBoxGroup;
-		private CameraTargetParams.AimRequest aimRequest;
+		private bool beginBlink = false;
+
 		private float prepDuration;
 		private float basePrepDuration = 0.25f;
 		private float jumpCoefficient = 10.0f;
 		private float blinkDuration = 0.3f;
-		private bool beginBlink = false;
+
+		private Transform modelTransform;
+
 		private GameObject blinkPrefab = Resources.Load<GameObject>("prefabs/effects/HuntressBlinkEffect");
+
+		private CharacterModel model;
+		private HurtBoxGroup hurtBoxGroup;
+		private CameraTargetParams.AimRequest aimRequest;
 
 		public override void OnEnter()
 		{

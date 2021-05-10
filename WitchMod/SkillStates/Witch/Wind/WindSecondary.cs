@@ -1,25 +1,25 @@
-﻿using EntityStates;
-using RoR2;
-using RoR2.Projectile;
+﻿using RoR2;
 using UnityEngine;
 
 namespace WitchMod.SkillStates
 {
 	class WindSecondary : BaseMeleeSkill
 	{
-		public static float dodgeFOV = EntityStates.Commando.DodgeState.dodgeFOV;
+		public static float spinningSlashDamageCoefficient = 2.8f;
 
+		private float dodgeFOV = EntityStates.Commando.DodgeState.dodgeFOV;
 		private float dashSpeed = 0.0f;
 		private float initialSpeedCoefficient = 6f;
 		private float finalSpeedCoefficient = 5f;
+
 		private Vector3 direction;
 
 		public override void OnEnter()
 		{
 			damage = DamageType.Generic;
-			damageCoefficient = Modules.StaticValues.swordDamageCoefficient;
+			damageCoefficient = spinningSlashDamageCoefficient;
 			procCoefficient = 1f;
-			pushForce = 300f;
+			pushForce = 100.0f;
 			bonusForce = Vector3.zero;
 			baseDuration = 0.5f;
 			attackStartTime = 0.1f;

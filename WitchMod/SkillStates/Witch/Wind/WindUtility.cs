@@ -8,24 +8,20 @@ namespace WitchMod.SkillStates
 {
 	class WindUtility : BaseWitchSkill
 	{
-		// Explosion statics
-		public static float damageCoefficient = 16f;
-		public static float procCoefficient = 1f;
-		public static float baseExplosionDuration = 0.0f;
-		public static string dodgeSoundString = "HenryRoll";
-		public static float dodgeFOV = EntityStates.Commando.DodgeState.dodgeFOV;
-
-		// Dodge statics
-		public static float initialSpeedCoefficient = 10f;
-		public static float finalSpeedCoefficient = 2.5f;
-		public static float dashDuration = 0.5f;
+		public static float damageCoefficient = 2.8f;
 
 		// Explosion variables
+		private bool hasFired;
 		private float explosionDuration;
 		private float fireTime;
-		private bool hasFired;
+		private float baseExplosionDuration = 0.0f;
+		private float dodgeFOV = EntityStates.Commando.DodgeState.dodgeFOV;
+		private string dodgeSoundString = "HenryRoll";
 
 		// Dash variables
+		private float initialSpeedCoefficient = 10f;
+		private float finalSpeedCoefficient = 2.5f;
+		private float dashDuration = 0.5f;
 		private float dashSpeed;
 
 		public override void OnEnter()
@@ -86,7 +82,7 @@ namespace WitchMod.SkillStates
 						Util.QuaternionSafeLookRotation(aimRay.direction),
 						gameObject,
 						damageCoefficient * damageStat,
-						4000f,
+						100.0f,
 						RollCrit(),
 						DamageColorIndex.Default,
 						null,

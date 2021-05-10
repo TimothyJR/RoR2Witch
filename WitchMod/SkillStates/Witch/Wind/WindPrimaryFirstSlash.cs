@@ -1,5 +1,4 @@
-﻿using EntityStates;
-using RoR2;
+﻿using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
 
@@ -7,12 +6,14 @@ namespace WitchMod.SkillStates
 {
 	class WindPrimaryFirstSlash : BaseMeleeSkill
 	{
+		public static float windSlashDamageCoefficient = 2.8f;
+
 		private float throwForce = 80.0f;
 
 		public override void OnEnter()
 		{
 			damage = DamageType.Generic;
-			damageCoefficient = Modules.StaticValues.swordDamageCoefficient;
+			damageCoefficient = windSlashDamageCoefficient / 2;
 			procCoefficient = 1f;
 			pushForce = 300f;
 			bonusForce = Vector3.zero;

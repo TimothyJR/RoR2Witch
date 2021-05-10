@@ -1,5 +1,4 @@
-﻿using EntityStates;
-using RoR2;
+﻿using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
 
@@ -7,15 +6,15 @@ namespace WitchMod.SkillStates
 {
 	class IceUtilityAttack : BaseChargeAttack
 	{
-		public static float maxFreezeTime = 2f;
-		public static float minFreezeTime = 6f;
-		public static float damageCoefficient = 10.0f;
-		public static float procCoefficient = 1f;
-		public static float baseDuration = 0.65f;
+		public static float damageCoefficient = 2.8f;
+		public static float healRate = 50.0f;
+		public static float minFreezeTime = 2.0f;
+		public static float maxFreezeTime = 6.0f;
 
+		private bool hasFired;
+		private float baseDuration = 0.65f;
 		private float duration;
 		private float fireTime;
-		private bool hasFired;
 		private float freezeTime;
 
 		public override void OnEnter()
@@ -74,7 +73,7 @@ namespace WitchMod.SkillStates
 						Util.QuaternionSafeLookRotation(aimRay.direction),
 						gameObject,
 						damageStat * damageCoefficient,
-						4000f,
+						400.0f,
 						RollCrit(),
 						DamageColorIndex.Default,
 						null,
@@ -86,6 +85,7 @@ namespace WitchMod.SkillStates
 				if (characterMotor)
 				{
 					characterMotor.velocity = Vector3.zero;
+					healthComponent.Heal(healRate * Time.fixedDeltaTime, default);
 				}
 			}
 

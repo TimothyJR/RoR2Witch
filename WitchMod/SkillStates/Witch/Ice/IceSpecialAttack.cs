@@ -1,5 +1,4 @@
-﻿using EntityStates;
-using RoR2;
+﻿using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
 
@@ -7,15 +6,13 @@ namespace WitchMod.SkillStates
 {
 	class IceSpecialAttack : BaseChargeAttack
 	{
-		public static float maxDamageCoefficient = 2f;
-		public static float minDamageCoefficient = 6f;
-		public static float procCoefficient = 1f;
-		public static float baseDuration = 0.65f;
+		public static float minDamageCoefficient = 2.0f;
+		public static float maxDamageCoefficient = 6.0f;
 
-
+		private bool hasFired;
+		private float baseDuration = 0.65f;
 		private float duration;
 		private float fireTime;
-		private bool hasFired;
 		private float middleSpawnCount = 10;
 		private float outerSpawnCount = 6;
 
@@ -54,34 +51,25 @@ namespace WitchMod.SkillStates
 
 				if (base.isAuthority)
 				{
-					Ray aimRay = GetAimRay();
 
-					ProjectileManager.instance.FireProjectile(Modules.Projectiles.iceSpecialProjectile,
+					Ray aimRay = GetAimRay();
+					SpawnProjectile(
 						aimRay.origin,
-						Util.QuaternionSafeLookRotation(aimRay.direction),
-						gameObject,
-						damageStat * Util.Remap(Mathf.Min(charge, 0.33f), 0.0f, 0.33f, minDamageCoefficient, maxDamageCoefficient),
-						4000f,
-						RollCrit(),
-						DamageColorIndex.Default,
-						null,
-						0.0f);
+						Quaternion.identity,
+						GetDamageMultiplier(0.0f, 0.33f, minDamageCoefficient, maxDamageCoefficient, 1.0f)
+						);
 
 					if (charge > 0.33f)
 					{
 						Vector3 spawnPoint = aimRay.origin + characterDirection.forward * 6.0f;
 						for(int i = 0; i < middleSpawnCount; i++)
 						{
-							ProjectileManager.instance.FireProjectile(Modules.Projectiles.iceSpecialProjectile,
+							SpawnProjectile(
 								spawnPoint,
-								Util.QuaternionSafeLookRotation(aimRay.direction),
-								gameObject,
-								damageStat * Util.Remap(Mathf.Min(charge, 0.33f), 0.0f, 0.33f, minDamageCoefficient, maxDamageCoefficient),
-								4000f,
-								RollCrit(),
-								DamageColorIndex.Default,
-								null,
-								0.0f);
+								Quaternion.identity,
+								GetDamageMultiplier(0.33f, 0.66f, minDamageCoefficient, maxDamageCoefficient, Modules.StaticValues.iceSecondAttackDamageMultiplier)
+								);
+
 							spawnPoint = Quaternion.AngleAxis(360 / (middleSpawnCount - 1), Vector3.up) * (spawnPoint - aimRay.origin) + aimRay.origin;
 						}
 
@@ -90,16 +78,12 @@ namespace WitchMod.SkillStates
 							spawnPoint = aimRay.origin + characterDirection.forward * 12.0f;
 							for (int i = 0; i < outerSpawnCount; i++)
 							{
-								ProjectileManager.instance.FireProjectile(Modules.Projectiles.iceSpecialProjectile,
+								SpawnProjectile(
 									spawnPoint,
-									Util.QuaternionSafeLookRotation(aimRay.direction),
-									gameObject,
-									damageStat * Util.Remap(Mathf.Min(charge, 0.33f), 0.0f, 0.33f, minDamageCoefficient, maxDamageCoefficient),
-									4000f,
-									RollCrit(),
-									DamageColorIndex.Default,
-									null,
-									0.0f);
+									Quaternion.identity,
+									GetDamageMultiplier(0.66f, 1.0f, minDamageCoefficient, maxDamageCoefficient, Modules.StaticValues.iceThirdAttackDamageMultiplier)
+									);
+
 								spawnPoint = Quaternion.AngleAxis(360 / (outerSpawnCount - 1), Vector3.up) * (spawnPoint - aimRay.origin) + aimRay.origin;
 							}
 						}
@@ -109,5 +93,18 @@ namespace WitchMod.SkillStates
 			}
 		}
 
+		private void SpawnProjectile(Vector3 origin, Quaternion direction, float damageMultiplier)
+		{
+			ProjectileManager.instance.FireProjectile(Modules.Projectiles.iceSpecialProjectile,
+				origin,
+				direction,
+				gameObject,
+				damageStat * damageMultiplier,
+				0.0f,
+				RollCrit(),
+				DamageColorIndex.Default,
+				null,
+				0.0f);
+		}
 	}
 }

@@ -1,34 +1,36 @@
-﻿using EntityStates;
-using RoR2;
-using RoR2.Projectile;
+﻿using RoR2;
 using UnityEngine;
-using UnityEngine.Networking;
+
 
 namespace WitchMod.SkillStates
 {
 	class LightningUtilityAim : BaseWitchSkill
 	{
-		private GameObject areaIndicatorPrefab = Resources.Load<GameObject>("prefabs/HuntressTrackingIndicator");
+		public static float damageCoefficient = 2.8f;
+
+		private bool shouldFire = false;
+		private float indicatorScale = 1.0f;
+		private float maxDuration = 3.0f;
+		private float blinkDuration = 0.3f;
+		private float timePassedUntilStart = 0.0f;
+		private float blastRadius = 5f;
+		private float procCoefficient = 1f;
+		private float range = 256f;
+
+		private Vector3 travelDirection;
+		private Vector3 positionToTravelTo;
+
 		private GameObject areaIndicatorInstance;
+		private GameObject areaIndicatorPrefab = Resources.Load<GameObject>("prefabs/HuntressTrackingIndicator");
 		private GameObject impactPrefab = Resources.Load<GameObject>("Prefabs/Effects/FusionCellExplosion");
 		private GameObject lightningBeamPrefab = Resources.Load<GameObject>("Prefabs/Effects/Tracers/TracerToolbotRebar");
 		private GameObject blinkPrefab = Resources.Load<GameObject>("prefabs/effects/HuntressBlinkEffect");
+
 		private Transform modelTransform;
 		private CharacterModel model;
 		private HurtBoxGroup hurtBoxGroup;
 		private CameraTargetParams.AimRequest aimRequest;
 		private WitchTracker tracker;
-		private float indicatorScale = 1.0f;
-		private float maxDuration = 3.0f;
-		private bool shouldFire = false;
-		private float blinkDuration = 0.3f;
-		private float timePassedUntilStart = 0.0f;
-		private float damageCoefficient = 3.0f;
-		public static float blastRadius = 5f;
-		public static float procCoefficient = 1f;
-		public static float range = 256f;
-		private Vector3 travelDirection;
-		private Vector3 positionToTravelTo;
 
 		public override void OnEnter()
 		{
@@ -157,7 +159,7 @@ namespace WitchMod.SkillStates
 					minSpread = 0.0f,
 					maxSpread = 0f,
 					damage = damageCoefficient * damageStat,
-					force = 100.0f,
+					force = 800.0f,
 					muzzleName = "Muzzle",
 					hitEffectPrefab = impactPrefab,
 					isCrit = RollCrit(),

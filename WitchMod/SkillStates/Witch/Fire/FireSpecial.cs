@@ -7,19 +7,18 @@ namespace WitchMod.SkillStates
 {
 	class FireSpecial : BaseWitchSkill
 	{
-		public static float damageCoefficient = 16f;
-		public static float procCoefficient = 1f;
-		public static float baseDuration = 0.65f;
-		public static float throwForce = 15.0f;
+		public static int projectileCount = 10;
+		public static float damageCoefficient = 2.8f;
 
+		private bool hasFired;
+		private float baseDuration = 0.65f;
+		private float throwForce = 80.0f;
 		private float duration;
 		private float fireTime;
-		private bool hasFired;
-		private int projectileCount = 10;
 		private float coneSize = 140.0f;
 		private float secondaryConeSize = 160.0f;
-		private float coneDistance = 5.0f;
-		private float secondaryConeDistance = 7.0f;
+		private float coneDistance = 7.0f;
+		private float secondaryConeDistance = 12.0f;
 
 		public override void OnEnter()
 		{
@@ -46,6 +45,19 @@ namespace WitchMod.SkillStates
 				if (isAuthority)
 				{
 					Ray aimRay = GetAimRay();
+					Quaternion aimDirection = Util.QuaternionSafeLookRotation(aimRay.direction);
+
+					ProjectileManager.instance.FireProjectile(Modules.Projectiles.fireSpecialMeteor,
+						aimRay.origin,
+						aimDirection,
+						gameObject,
+						damageCoefficient * damageStat,
+						4000f,
+						RollCrit(),
+						DamageColorIndex.Default,
+						null,
+						throwForce);
+
 					Vector3 behind = -aimRay.direction.normalized;
 					Vector3 aimRayNoY = aimRay.direction.normalized;
 					aimRayNoY.y = 0.0f;
@@ -53,32 +65,34 @@ namespace WitchMod.SkillStates
 
 					for (int i = 0; i < projectileCount / 2; i++)
 					{
-						SpawnProjectile(aimRay, right * coneDistance, behind, coneSize, projectileCount / 2, i);
+						SpawnProjectile(aimRay, right * coneDistance, behind, coneSize, projectileCount / 2, i, aimDirection);
 					}
 
 					for (int i = projectileCount / 2; i < projectileCount; i++)
 					{
-						Debug.Log(projectileCount - i);
-						SpawnProjectile(aimRay, right * secondaryConeDistance, behind, secondaryConeSize, projectileCount - (projectileCount / 2), (i - projectileCount / 2));
+						SpawnProjectile(aimRay, right * secondaryConeDistance, behind, secondaryConeSize, projectileCount - (projectileCount / 2), (i - projectileCount / 2), aimDirection);
 					}
 				}
 			}
 		}
 
-		private void SpawnProjectile(Ray aimRay, Vector3 right, Vector3 behind, float cone, float projectileCountOnArc, float projectileIndex)
+		private void SpawnProjectile(Ray aimRay, Vector3 right, Vector3 behind, float cone, float projectileCountOnArc, float projectileIndex, Quaternion aimDirection)
 		{
 			Vector3 origin;
 			origin = aimRay.origin + right;
-
 			float startAngle = (180.0f - cone) / 2;
 			origin = Quaternion.AngleAxis(startAngle + (cone / (projectileCountOnArc - 1)) * projectileIndex, -aimRay.direction) * (origin - aimRay.origin) + aimRay.origin;
 			origin += behind;
-			ProjectileManager.instance.FireProjectile(Modules.Projectiles.firePrimaryProjectile,
+
+			Vector3 directionTowardsAim = aimRay.origin + (aimRay.direction.normalized * 300.0f) - origin;
+			Quaternion aim = Quaternion.Slerp(aimDirection, Util.QuaternionSafeLookRotation(directionTowardsAim), 25.0f);
+
+			ProjectileManager.instance.FireProjectile(Modules.Projectiles.fireSpecialMeteor,
 				origin,
-				Util.QuaternionSafeLookRotation(aimRay.direction),
+				aim,
 				gameObject,
 				damageCoefficient * damageStat,
-				4000f,
+				200.0f,
 				RollCrit(),
 				DamageColorIndex.Default,
 				null,

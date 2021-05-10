@@ -2,21 +2,19 @@
 using RoR2;
 using RoR2.Orbs;
 using System.Linq;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace WitchMod.SkillStates
 {
 	class LightningPrimary : BaseWitchSkill
 	{
-		public static float damageCoefficient = 16f;
-		public static float procCoefficient = 1f;
-		public static float baseDuration = 0.65f;
-		public static float throwForce = 80f;
+		public static float damageCoefficient = 2.8f;
 
+		private bool hasFired;
+		private float procCoefficient = 1f;
+		private float baseDuration = 0.65f;
 		private float duration;
 		private float fireTime;
-		private bool hasFired;
 
 		private WitchTracker tracker;
 
@@ -35,7 +33,7 @@ namespace WitchMod.SkillStates
 			if (!hasFired)
 			{
 				hasFired = true;
-				Util.PlaySound("HenryBombThrow", base.gameObject);
+				Util.PlaySound("HenryBombThrow", gameObject);
 
 				if (isAuthority)
 				{
@@ -82,14 +80,14 @@ namespace WitchMod.SkillStates
 		{
 			base.FixedUpdate();
 
-			if (base.fixedAge >= this.fireTime)
+			if (fixedAge >= fireTime)
 			{
-				this.Fire();
+				Fire();
 			}
 
-			if (base.fixedAge >= this.duration && base.isAuthority)
+			if (fixedAge >= duration && isAuthority)
 			{
-				this.outer.SetNextStateToMain();
+				outer.SetNextStateToMain();
 				return;
 			}
 		}

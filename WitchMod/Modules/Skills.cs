@@ -48,8 +48,8 @@ namespace WitchMod.Modules
 			{
 				family.variants[i] = new SkillFamily.Variant
 				{
-					skillDef = skillDef[0],
-					viewableNode = new ViewablesCatalog.Node(skillDef[0].skillNameToken, false, null)
+					skillDef = skillDef[i],
+					viewableNode = new ViewablesCatalog.Node(skillDef[i].skillNameToken, false, null)
 				};
 			}
 
