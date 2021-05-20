@@ -6,10 +6,10 @@ namespace WitchMod.SkillStates
 {
 	class IceUtilityAttack : BaseChargeAttack
 	{
-		public static float damageCoefficient = 2.8f;
-		public static float healRate = 50.0f;
-		public static float minFreezeTime = 2.0f;
-		public static float maxFreezeTime = 6.0f;
+		public static float damageCoefficient = 3.0f;
+		public static float healRate = 100.0f;
+		public static float minFreezeTime = 1.0f;
+		public static float maxFreezeTime = 4.0f;
 
 		private bool hasFired;
 		private float baseDuration = 0.65f;

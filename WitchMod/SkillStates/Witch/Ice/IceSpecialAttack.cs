@@ -6,8 +6,8 @@ namespace WitchMod.SkillStates
 {
 	class IceSpecialAttack : BaseChargeAttack
 	{
-		public static float minDamageCoefficient = 2.0f;
-		public static float maxDamageCoefficient = 6.0f;
+		public static float minDamageCoefficient = 5.0f;
+		public static float maxDamageCoefficient = 10.0f;
 
 		private bool hasFired;
 		private float baseDuration = 0.65f;
@@ -49,7 +49,7 @@ namespace WitchMod.SkillStates
 				hasFired = true;
 				Util.PlaySound("HenryBombThrow", gameObject);
 
-				if (base.isAuthority)
+				if (isAuthority)
 				{
 
 					Ray aimRay = GetAimRay();

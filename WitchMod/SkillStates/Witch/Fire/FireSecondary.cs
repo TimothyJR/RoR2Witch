@@ -6,7 +6,7 @@ namespace WitchMod.SkillStates
 {
 	class FireSecondary : BaseWitchSkill
 	{
-		public static float damageCoefficient = 2.8f;
+		public static float damageCoefficient = 5f;
 
 		private bool hasFired = false;
 		private float baseDuration = 1.8f;

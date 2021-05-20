@@ -16,6 +16,7 @@ namespace WitchMod.Modules
 		internal static GameObject iceSpecialProjectile;
 		internal static GameObject windPrimaryProjectile;
 		internal static GameObject windSpecialProjectile;
+		internal static GameObject lightningSecondaryProjectile;
 
 		internal static void RegisterProjectiles()
 		{
@@ -28,6 +29,7 @@ namespace WitchMod.Modules
 			CreateIceSpecial();
 			CreateWindPrimary();
 			CreateWindSpecial();
+			CreateLightningSecondary();
 			AddProjectile(firePrimaryProjectile);
 			AddProjectile(fireUtilityExplosion);
 			AddProjectile(fireSpecialMeteor);
@@ -36,7 +38,7 @@ namespace WitchMod.Modules
 			AddProjectile(iceSpecialProjectile);
 			AddProjectile(windPrimaryProjectile);
 			AddProjectile(windSpecialProjectile);
-
+			AddProjectile(lightningSecondaryProjectile);
 		}
 
 		internal static void AddProjectile(GameObject projectileToAdd)
@@ -49,7 +51,7 @@ namespace WitchMod.Modules
 			ProjectileImpactExplosion impactExplosion;
 			firePrimaryProjectile = CreateProjectile("MageFireBombProjectile", "WitchFireBallProjectile", "FireballGhost", false, out impactExplosion, DamageType.IgniteOnHit);
 
-			impactExplosion.lifetime = 12f;
+			impactExplosion.lifetime = 0.75f;
 			impactExplosion.impactEffect = Assets.bombExplosionEffect;
 			impactExplosion.timerAfterImpact = true;
 			impactExplosion.lifetimeAfterImpact = 0.1f;
@@ -74,7 +76,7 @@ namespace WitchMod.Modules
 
 			impactExplosion.blastRadius = 10f;
 			impactExplosion.destroyOnEnemy = true;
-			impactExplosion.lifetime = 12f;
+			impactExplosion.lifetime = 5.0f;
 			impactExplosion.impactEffect = Assets.bombExplosionEffect;
 			impactExplosion.timerAfterImpact = true;
 			impactExplosion.lifetimeAfterImpact = 0.1f;
@@ -89,7 +91,7 @@ namespace WitchMod.Modules
 
 			impactExplosion.blastRadius = 1f;
 			impactExplosion.destroyOnEnemy = true;
-			impactExplosion.lifetime = 10f;
+			impactExplosion.lifetime = 5.0f;
 			impactExplosion.impactEffect = Resources.Load<GameObject>("Prefabs/Effects/ImpactEffects/MageIceExplosion");
 			impactExplosion.timerAfterImpact = true;
 			impactExplosion.lifetimeAfterImpact = 0.1f;
@@ -140,6 +142,18 @@ namespace WitchMod.Modules
 			//impactExplosion.impactEffect = Assets.bombExplosionEffect;
 			//impactExplosion.timerAfterImpact = true;
 			//impactExplosion.lifetimeAfterImpact = 0.1f;
+		}
+
+		private static void CreateLightningSecondary()
+		{
+			ProjectileImpactExplosion impactExplosion;
+			lightningSecondaryProjectile = CreateProjectile("CaptainTazer", "WitchWindProjectile", "CaptainTazerGhost", false, out impactExplosion, DamageType.Generic);
+
+			impactExplosion.blastRadius = 1f;
+			impactExplosion.lifetime = 2.0f;
+			impactExplosion.impactEffect = Assets.bombExplosionEffect;
+			impactExplosion.timerAfterImpact = true;
+			impactExplosion.lifetimeAfterImpact = 0.1f;
 		}
 
 		private static GameObject CreateProjectile(string cloneName, string newName, string ghostAssetName, bool loadGhostFromAssetBundle, out ProjectileImpactExplosion impact, DamageType type = DamageType.Generic, bool hasImpact = true)

@@ -1,22 +1,20 @@
 ﻿using EntityStates;
 using RoR2;
-using RoR2.Orbs;
-using System.Linq;
+using RoR2.Projectile;
 using UnityEngine;
 
 namespace WitchMod.SkillStates
 {
 	class LightningSecondary : BaseWitchSkill
 	{
-		public static float damageCoefficient = 2.8f;
+		public static float damageCoefficient = 4.0f;
 
 		private bool hasFired;
-		private float procCoefficient = 1f;
 		private float baseDuration = 0.65f;
 		private float duration;
 		private float fireTime;
+		private float throwForce = 80f;
 
-		private WitchTracker tracker;
 
 		public override void OnEnter()
 		{
@@ -24,7 +22,7 @@ namespace WitchMod.SkillStates
 			duration = baseDuration / attackSpeedStat;
 			fireTime = 0.35f * duration;
 			characterBody.SetAimTimer(2f);
-			tracker = GetComponent<WitchTracker>();
+
 			PlayAnimation("Gesture, Override", "ThrowBomb", "ThrowBomb.playbackRate", duration);
 		}
 
@@ -37,43 +35,21 @@ namespace WitchMod.SkillStates
 
 				if (isAuthority)
 				{
-					if (tracker != null)
-					{
-						if (tracker.GetTrackingTarget() != null)
-						{
-							FireOrb(tracker.GetTrackingTarget());
-						}
-					}
-					else
-					{
-						Ray aimRay = GetAimRay();
-						BullseyeSearch bullseyeSearch = new BullseyeSearch();
-						bullseyeSearch.searchOrigin = aimRay.origin;
-						bullseyeSearch.searchDirection = aimRay.direction;
-						bullseyeSearch.maxDistanceFilter = 50.0f;
-						bullseyeSearch.teamMaskFilter = TeamMask.GetUnprotectedTeams(teamComponent.teamIndex);
-						bullseyeSearch.sortMode = BullseyeSearch.SortMode.Distance;
-						bullseyeSearch.RefreshCandidates();
-						HurtBox hurtBox = bullseyeSearch.GetResults().FirstOrDefault();
+					Ray aimRay = GetAimRay();
 
-						FireOrb(hurtBox);
-					}
+					ProjectileManager.instance.FireProjectile(Modules.Projectiles.lightningSecondaryProjectile,
+						aimRay.origin,
+						Util.QuaternionSafeLookRotation(aimRay.direction),
+						gameObject,
+						damageCoefficient * damageStat,
+						10.0f,
+						RollCrit(),
+						DamageColorIndex.Default,
+						null,
+						throwForce);
+
 				}
 			}
-		}
-
-		private void FireOrb(HurtBox target)
-		{
-			OrbManager.instance.AddOrb(new LightningStrikeOrb
-			{
-				attacker = gameObject,
-				damageColorIndex = DamageColorIndex.Default,
-				damageValue = characterBody.damage * damageCoefficient,
-				isCrit = RollCrit(),
-				procChainMask = default,
-				procCoefficient = procCoefficient,
-				target = target
-			});
 		}
 
 		public override void FixedUpdate()

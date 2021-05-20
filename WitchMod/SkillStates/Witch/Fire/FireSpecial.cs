@@ -8,7 +8,7 @@ namespace WitchMod.SkillStates
 	class FireSpecial : BaseWitchSkill
 	{
 		public static int projectileCount = 10;
-		public static float damageCoefficient = 2.8f;
+		public static float damageCoefficient = 10.0f;
 
 		private bool hasFired;
 		private float baseDuration = 0.65f;

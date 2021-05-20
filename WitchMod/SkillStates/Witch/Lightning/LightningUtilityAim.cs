@@ -6,7 +6,7 @@ namespace WitchMod.SkillStates
 {
 	class LightningUtilityAim : BaseWitchSkill
 	{
-		public static float damageCoefficient = 2.8f;
+		public static float damageCoefficient = 6.0f;
 
 		private bool shouldFire = false;
 		private float indicatorScale = 1.0f;
@@ -183,7 +183,7 @@ namespace WitchMod.SkillStates
 		{
 			if(areaIndicatorInstance)
 			{
-				float maxDistance = 1000f;
+				float maxDistance = 100.0f;
 				RaycastHit raycastHit;
 				if(Physics.Raycast(GetAimRay(), out raycastHit, maxDistance, LayerIndex.world.mask))
 				{
@@ -196,7 +196,7 @@ namespace WitchMod.SkillStates
 		private void HandlePrimaryAttack()
 		{
 			shouldFire = true;
-			float maxDistance = 1000f;
+			float maxDistance = 100.0f;
 			RaycastHit raycastHit;
 			if (Physics.Raycast(GetAimRay(), out raycastHit, maxDistance, LayerIndex.world.mask))
 			{
