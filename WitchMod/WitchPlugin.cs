@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using WitchMod.Modules.Survivors;
 using R2API;
 using R2API.Utils;
 using RoR2;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
+using WitchMod.Modules.Survivors;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -17,7 +17,7 @@ namespace WitchMod
 	[BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
 	[NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
 	[BepInPlugin(MODUID, MODNAME, MODVERSION)]
-	[R2APISubmoduleDependency(nameof(PrefabAPI), nameof(SoundAPI), nameof(ItemAPI), nameof(ItemDropAPI), nameof(LanguageAPI))]
+	[R2APISubmoduleDependency(nameof(PrefabAPI), nameof(SoundAPI), nameof(ItemAPI), nameof(ItemDropAPI), nameof(LanguageAPI), nameof(DamageAPI))]
 	public class WitchPlugin : BaseUnityPlugin
 	{
 		// if you don't change these you're giving permission to deprecate the mod-
@@ -25,7 +25,7 @@ namespace WitchMod
 		//   this shouldn't even have to be said
 		public const string MODUID = "com.TimothyReuter.WitchMod";
 		public const string MODNAME = "WitchMod";
-		public const string MODVERSION = "0.3.5";
+		public const string MODVERSION = "0.5.0";
 
 		// a prefix for name tokens to prevent conflicts- please capitalize all name tokens for convention
 		public const string developerPrefix = "TIM";
@@ -40,6 +40,7 @@ namespace WitchMod
 
 			// load assets and read config
 			Modules.Assets.Initialize();
+			Modules.DamageTypes.RegisterDamageTypes();
 			Modules.Config.ReadConfig();
 			Modules.States.RegisterStates(); // register states for networking
 			Modules.Buffs.RegisterBuffs(); // add and register custom buffs/debuffs
@@ -96,24 +97,25 @@ namespace WitchMod
 			//}
 		}
 
-		private void ChangeCharacterSkills(On.RoR2.EquipmentSlot.orig_Execute orig, EquipmentSlot self)
-		{
-			orig(self);
-			EntityStateMachine stateMachine = self.characterBody.gameObject.GetComponents<EntityStateMachine>().FirstOrDefault((EntityStateMachine c) => c.customName != "WitchStance");
-			stateMachine.SetNextState(EntityStateCatalog.InstantiateState(typeof(SkillStates.WitchSwap)));
-		}
+		//private void ChangeCharacterSkills(On.RoR2.EquipmentSlot.orig_Execute orig, EquipmentSlot self)
+		//{
+		//	orig(self);
+		//	EntityStateMachine stateMachine = self.characterBody.gameObject.GetComponents<EntityStateMachine>().FirstOrDefault((EntityStateMachine c) => c.customName != "WitchStance");
+		//	stateMachine.SetNextState(EntityStateCatalog.InstantiateState(typeof(SkillStates.WitchSwap)));
+		//}
 
 		public void Update()
 		{
 			if(Input.GetKeyDown(KeyCode.F1))
 			{
 				EntityStateMachine stateMachine = PlayerCharacterMasterController.instances[0].master.GetBodyObject().gameObject.GetComponents<EntityStateMachine>().FirstOrDefault((EntityStateMachine c) => c.customName != "WitchStance");
-				stateMachine.SetNextState(EntityStateCatalog.InstantiateState(typeof(SkillStates.WitchSwap)));
-			}
-			if(Input.GetKeyDown(KeyCode.F2))
-			{
-				Transform trans = PlayerCharacterMasterController.instances[0].master.GetBodyObject().transform;
-				PickupDropletController.CreatePickupDroplet(PickupCatalog.FindPickupIndex("TIM_WITCH_STAFF"), transform.position, transform.forward * 20.0f);
+
+				// Make sure the player has been initialized by exiting the pod
+				// Easy way to do is to check if it has a component that gets added when it leaves the pod
+				if(stateMachine.GetComponent<SkillStates.WitchTracker>() != null)
+				{
+					stateMachine.SetNextState(EntityStateCatalog.InstantiateState(typeof(SkillStates.WitchSwap)));
+				}
 			}
 		}
 	}

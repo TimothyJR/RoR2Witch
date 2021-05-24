@@ -6,7 +6,7 @@ namespace WitchMod.SkillStates
 {
 	class WindPrimaryFirstSlash : BaseMeleeSkill
 	{
-		public static float windSlashDamageCoefficient = 2.8f;
+		public static float windSlashDamageCoefficient = 3.0f;
 
 		private float throwForce = 80.0f;
 

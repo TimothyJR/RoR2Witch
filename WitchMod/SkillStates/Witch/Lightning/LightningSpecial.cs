@@ -6,7 +6,7 @@ namespace WitchMod.SkillStates
 {
 	class LightningSpecial : BaseWitchSkill
 	{
-		public static float damageCoefficient = 10.0f;
+		public static float damageCoefficient = 15.0f;
 
 		private bool hasFired = false;
 		private float baseDuration = 1.8f;

@@ -6,7 +6,7 @@ namespace WitchMod.SkillStates
 {
 	class WindSpecial : BaseWitchSkill
 	{
-		public static float damageCoefficient = 2.8f;
+		public static float damageCoefficient = 3.0f;
 
 		private bool hasFired;
 		private float baseDuration = 0.65f;

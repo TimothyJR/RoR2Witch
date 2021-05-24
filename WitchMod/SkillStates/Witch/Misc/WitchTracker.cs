@@ -10,7 +10,7 @@ namespace WitchMod.SkillStates
 	class WitchTracker : MonoBehaviour
 	{
 
-		private float maxTrackingDistance = 40.0f;
+		private float maxTrackingDistance = 100.0f;
 		private float maxTrackingAngle = 20.0f;
 		private float trackerUpdateFrequency = 10.0f;
 		private float timeSinceUpdate;

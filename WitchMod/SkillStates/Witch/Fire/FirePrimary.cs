@@ -8,7 +8,7 @@ namespace WitchMod.SkillStates
 	class FirePrimary : BaseWitchSkill
 	{
 		public static int projectileCount = 5;
-		public static float damageCoefficient = 1.2f;
+		public static float damageCoefficient = 1.4f;
 
 		private bool hasFired;
 		private float baseDuration = 0.65f;
@@ -38,7 +38,8 @@ namespace WitchMod.SkillStates
 				{
 					Ray aimRay = GetAimRay();
 
-					Vector3 up = Vector3.Cross(aimRay.direction, Quaternion.Euler(0.0f, characterDirection.yaw, 0.0f) * Vector3.right);
+					//Vector3 up = Vector3.Cross(aimRay.direction, Quaternion.Euler(0.0f, characterDirection.yaw, 0.0f) * Vector3.right);
+					Vector3 up = Vector3.Cross(aimRay.direction, transform.right);
 					float increment = coneSize / (projectileCount - 1);
 					float start = -coneSize / 2;
 

@@ -131,7 +131,10 @@ namespace WitchMod.SkillStates
 			{
 				if (GetInputButtonDown())
 				{
-					if (!hasFired) FireAttack();
+					if (!hasFired)
+					{
+						FireAttack();
+					}
 					SetNextState();
 					return;
 				}

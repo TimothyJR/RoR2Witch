@@ -6,7 +6,7 @@ namespace WitchMod.SkillStates
 {
 	class LightningUtilityAim : BaseWitchSkill
 	{
-		public static float damageCoefficient = 6.0f;
+		public static float damageCoefficient = 8.0f;
 
 		private bool shouldFire = false;
 		private float indicatorScale = 1.0f;

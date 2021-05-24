@@ -6,8 +6,8 @@ namespace WitchMod.SkillStates
 {
 	class IceSecondaryAttack : BaseChargeAttack
 	{
-		public static float minDamageCoefficient = 2.0f;
-		public static float maxDamageCoefficient = 6.0f;
+		public static float minDamageCoefficient = 4.0f;
+		public static float maxDamageCoefficient = 8.0f;
 
 		public override void OnEnter()
 		{

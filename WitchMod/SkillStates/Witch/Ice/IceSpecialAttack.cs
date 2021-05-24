@@ -6,8 +6,8 @@ namespace WitchMod.SkillStates
 {
 	class IceSpecialAttack : BaseChargeAttack
 	{
-		public static float minDamageCoefficient = 5.0f;
-		public static float maxDamageCoefficient = 10.0f;
+		public static float minDamageCoefficient = 6.0f;
+		public static float maxDamageCoefficient = 12.0f;
 
 		private bool hasFired;
 		private float baseDuration = 0.65f;

@@ -1,4 +1,5 @@
 ﻿using RoR2;
+using RoR2.Orbs;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,14 +7,23 @@ namespace WitchMod.Modules
 {
 	public static class Buffs
 	{
-		// armor buff gained during roll
-		internal static BuffDef armorBuff;
+		// Lightning Buffs
+		internal static BuffDef lightningFieldBuff;
+		internal static float lightningCurrentTimer = 0.0f;
+		internal static float lightningCheckTimer = 0.02f;
+		internal static float lightningDamageMultiplier = 2.5f;
 
 		internal static List<BuffDef> buffDefs = new List<BuffDef>();
 
 		internal static void RegisterBuffs()
 		{
-			armorBuff = AddNewBuff("HenryArmorBuff", Resources.Load<Sprite>("Textures/BuffIcons/texBuffGenericShield"), Color.white, false, false);
+			lightningFieldBuff = AddNewBuff("LightningFieldBuff", Resources.Load<Sprite>("textures/bufficons/texBuffTeslaIcon"), Color.blue, false, false);
+
+			On.RoR2.CharacterBody.FixedUpdate += (orig, self) =>
+			{
+				UpdateLightningFieldBuff(self);
+				orig(self);
+			};
 		}
 
 		// simple helper method
@@ -30,6 +40,51 @@ namespace WitchMod.Modules
 			buffDefs.Add(buffDef);
 
 			return buffDef;
+		}
+
+		internal static void UpdateLightningFieldBuff(CharacterBody body)
+		{
+			if(body.HasBuff(lightningFieldBuff))
+			{
+				lightningCurrentTimer += Time.fixedDeltaTime;
+				if(lightningCurrentTimer > lightningCheckTimer)
+				{
+					lightningCurrentTimer -= lightningCheckTimer;
+
+					LightningOrb orb = new LightningOrb
+					{
+						origin = body.corePosition,
+						damageValue = body.damage * lightningDamageMultiplier,
+						isCrit = Util.CheckRoll(body.crit, body.master),
+						bouncesRemaining = 1,
+						teamIndex = body.teamComponent.teamIndex,
+						attacker = body.gameObject,
+						procCoefficient = 0.3f,
+						bouncedObjects = body.previousTeslaTargetList,
+						lightningType = LightningOrb.LightningType.Tesla,
+						damageColorIndex = DamageColorIndex.Default,
+						range = 50.0f
+					};
+
+					HurtBox hurtbox = orb.PickNextTarget(body.transform.position);
+					if(hurtbox)
+					{
+						orb.target = hurtbox;
+						body.previousTeslaTargetList.Add(hurtbox.healthComponent);
+						OrbManager.instance.AddOrb(orb);
+					}
+
+					if(body.inventory.GetItemCount(RoR2Content.Items.ShockNearby) < 1)
+					{
+						body.teslaResetListTimer += Time.fixedDeltaTime;
+						if(body.teslaResetListTimer > body.teslaResetListInterval)
+						{
+							body.teslaResetListTimer -= body.teslaResetListInterval;
+							body.previousTeslaTargetList.Clear();
+						}
+					}
+				}
+			}
 		}
 	}
 }

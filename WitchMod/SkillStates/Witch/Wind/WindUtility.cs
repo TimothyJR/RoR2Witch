@@ -8,7 +8,7 @@ namespace WitchMod.SkillStates
 {
 	class WindUtility : BaseWitchSkill
 	{
-		public static float damageCoefficient = 2.8f;
+		public static float damageCoefficient = 2.0f;
 
 		// Explosion variables
 		private bool hasFired;

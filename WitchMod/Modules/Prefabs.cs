@@ -53,7 +53,7 @@ namespace WitchMod.Modules
 				return null;
 			}
 
-			GameObject newPrefab = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/CharacterBodies/" + bodyInfo.bodyNameToClone + "Body"), modelName + "Prefab");
+			GameObject newPrefab = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/CharacterBodies/" + bodyInfo.bodyNameToClone + "Body"), modelName + "Prefab", true);
 
 			GameObject model = CreateModel(newPrefab, modelName);
 			Transform modelBaseTransform = SetupModel(newPrefab, model.transform, bodyInfo);
@@ -73,7 +73,7 @@ namespace WitchMod.Modules
 				return null;
 			}
 
-			GameObject newPrefab = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/CharacterBodies/" + bodyInfo.bodyNameToClone + "Body"), bodyName);
+			GameObject newPrefab = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/CharacterBodies/" + bodyInfo.bodyNameToClone + "Body"), bodyName, true);
 
 			Transform modelBaseTransform = null;
 			GameObject model = null;

@@ -11,14 +11,20 @@ namespace WitchMod.SkillStates
 		{
 			base.OnEnter();
 			outer.mainStateType = new SerializableEntityStateType(typeof(GenericCharacterMain));
-			characterBody.inventory.GiveItem(Modules.Items.witchItem);
+
+			if(characterBody.inventory.GetItemCount(Modules.Items.witchItem.itemIndex) < 1)
+			{
+				characterBody.inventory.GiveItem(Modules.Items.witchItem);
+			}
+
 			if (!gameObject.GetComponent<WitchItemBehavior>())
 			{
 				gameObject.AddComponent<WitchItemBehavior>();
 			}
+
 			if(!gameObject.GetComponent<WitchTracker>())
 			{
-				gameObject.AddComponent<WitchTracker>().enabled = false ;
+				gameObject.AddComponent<WitchTracker>().enabled = false;
 			}
 			outer.SetNextStateToMain();
 		}

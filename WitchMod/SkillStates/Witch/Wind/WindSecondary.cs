@@ -5,8 +5,10 @@ namespace WitchMod.SkillStates
 {
 	class WindSecondary : BaseMeleeSkill
 	{
-		public static float spinningSlashDamageCoefficient = 2.8f;
+		public static float spinningSlashDamageCoefficient = 4.0f;
 
+
+		private bool hasFallDamageImmunity = false;
 		private float dodgeFOV = EntityStates.Commando.DodgeState.dodgeFOV;
 		private float dashSpeed = 0.0f;
 		private float initialSpeedCoefficient = 6f;
@@ -16,6 +18,8 @@ namespace WitchMod.SkillStates
 
 		public override void OnEnter()
 		{
+			Debug.LogWarning("Entering wind secondary");
+
 			damage = DamageType.Generic;
 			damageCoefficient = spinningSlashDamageCoefficient;
 			procCoefficient = 1f;
@@ -24,7 +28,7 @@ namespace WitchMod.SkillStates
 			baseDuration = 0.5f;
 			attackStartTime = 0.1f;
 			attackEndTime = 0.45f;
-			baseEarlyExitTime = 0.4f;
+			baseEarlyExitTime = 0.1f;
 			hitStopDuration = 0.012f;
 			attackRecoil = 0.5f;
 			hitHopVelocity = 4f;
@@ -36,7 +40,15 @@ namespace WitchMod.SkillStates
 
 			base.OnEnter();
 
-			characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, Duration);
+			if((characterBody.bodyFlags & CharacterBody.BodyFlags.IgnoreFallDamage) > 0)
+			{
+				hasFallDamageImmunity = true;
+			}
+			else
+			{
+				characterBody.bodyFlags |= CharacterBody.BodyFlags.IgnoreFallDamage;
+			}
+
 
 			if (characterMotor && characterDirection)
 			{
@@ -64,6 +76,12 @@ namespace WitchMod.SkillStates
 
 		public override void OnExit()
 		{
+			Debug.LogWarning("Exiting wind secondary");
+
+			if(!hasFallDamageImmunity)
+			{
+				characterBody.bodyFlags &= ~CharacterBody.BodyFlags.IgnoreFallDamage;
+			}
 			characterMotor.velocity *= 0.2f;
 			base.OnExit();
 		}

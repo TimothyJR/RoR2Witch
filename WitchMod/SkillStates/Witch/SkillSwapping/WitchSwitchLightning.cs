@@ -4,16 +4,30 @@ namespace WitchMod.SkillStates
 {
 	class WitchSwitchLightning : WitchSwitchSpell
 	{
+		WitchTracker tracker;
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			GetComponent<WitchTracker>().enabled = true;
+			tracker = GetComponent<WitchTracker>();
+			if (tracker != null)
+			{
+				tracker.enabled = true;
+			}
+			else
+			{
+				gameObject.AddComponent<WitchTracker>();
+			}
+
 			swapState = typeof(WitchSwitchFire);
 		}
 
 		public override void OnExit()
 		{
-			GetComponent<WitchTracker>().enabled = false;
+			if(tracker != null)
+			{
+				tracker.enabled = false;
+			}
+
 			base.OnExit();
 		}
 
